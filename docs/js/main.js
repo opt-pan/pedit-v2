@@ -156,9 +156,8 @@ function coord_point(e){
   var y = e.pageY - canvas.offsetTop;
   var min0,min = 10e6;
   var num = 0;
-  var type = pu.type_set();
   for (var i in pu.point){
-    if(type.indexOf(pu.point[i].type) != -1){
+    if(pu.type.indexOf(pu.point[i].type) != -1){
       min0 = (x-pu.point[i].x)**2+(y-pu.point[i].y)**2;
       if(min0<min){
         min = min0;

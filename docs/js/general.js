@@ -83,6 +83,15 @@ function make_class(gridtype){
         alert("一辺:1~20 サイズ:15~60");
       }
       break;
+    case "pyramid":
+      var n0 = parseInt(document.getElementById("nb_size1").value,10);
+      var space1 = parseInt(document.getElementById("nb_space1").value,10);
+      if(n0<=20 && n0>0 && 15<=size && size<=60 && space1<n0/3){
+        pu = new Puzzle_pyramid(n0,n0,size);
+      }else{
+        alert("一辺:1~20 サイズ:15~60");
+      }
+      break;
   }
   return pu;
 }
@@ -125,6 +134,16 @@ function changetype(){
       document.getElementById("nb_size3").value = 60;
       document.getElementById("nb_space1").value = 0;
       break;
+    case "pyramid":
+      for (var i of type){
+        document.getElementById(i).style.display = "none";
+      }
+      document.getElementById("name_size1").innerHTML = "一辺：";
+      document.getElementById("name_space1").innerHTML = "外周：";
+      document.getElementById("nb_size1").value = 6;
+      document.getElementById("nb_size3").value = 50;
+      document.getElementById("nb_space1").value = 0;
+      break;
   }
 }
 
@@ -145,13 +164,13 @@ function CreateCheck() {
 
 function newgrid(){
   var size = parseInt(document.getElementById("nb_size3").value);
-  if(15<=size && size<=120){
+  if(15<=size && size<=60){
     pu.reset_frame_newgrid();
     pu.redraw();
     panel_pu.draw_panel();
     document.getElementById('modal').style.display = 'none';
   }else{
-    alert("サイズ:15~120");
+    alert("サイズ:15~60");
   }
 }
 
@@ -464,22 +483,16 @@ function set_solvemode(){
   document.getElementById("tb_delete").value = "解答消去"
 }
 
-(function(target) {
-  if (!target || !target.prototype)
-    return;
-  target.prototype.text = function(text,x,y,width) {
-    var font = this.font.split(' ');
-    fontsize = parseFloat(font[0].slice(0,-2));
-    this.strokeText(text,x,y+0.28*fontsize,width);
-    this.fillText(text,x,y+0.28*fontsize,width);
-  };
-})(CanvasRenderingContext2D);
-
 /*Copyright (c) 2017 Yuzo Matsuzawa*/
 
 (function(target) {
   if (!target || !target.prototype)
     return;
+  target.prototype.text = function(text,x,y,width = 1e4) {
+    var fontsize = parseFloat(this.font.split("px")[0]);
+    this.strokeText(text,x,y+0.28*fontsize,width);
+    this.fillText(text,x,y+0.28*fontsize,width);
+  };
   target.prototype.arrow = function(startX, startY, endX, endY, controlPoints) {
     var dx = endX - startX;
     var dy = endY - startY;

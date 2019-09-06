@@ -476,6 +476,7 @@ class Puzzle{
 
   mode_set(mode){
     this.mode[this.mode.qa].edit_mode = mode;
+    this.type = this.type_set();
     if(mode === "number"){
       document.getElementById("sub_txt").innerHTML = "サブ";
     }else{
@@ -768,7 +769,7 @@ class Puzzle{
           break;
         case "2":
           this.record("number",this.cursol);
-          if(this[this.mode.qa].number[this.cursol]){
+          if(this[this.mode.qa].number[this.cursol] && this[this.mode.qa].number[this.cursol][2] != "7"){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -824,7 +825,7 @@ class Puzzle{
           this[this.mode.qa].number[this.cursol] = [number,this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1],this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]];
           break;
         case "5":
-          if(this[this.mode.qa].number[this.cursol]&&this[this.mode.qa].number[this.cursol][2]!="7"){
+          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2] != "2"&&this[this.mode.qa].number[this.cursol][2]!="7"){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -836,7 +837,7 @@ class Puzzle{
           }
           break;
         case "6":
-          if(this[this.mode.qa].number[this.cursol]&&this[this.mode.qa].number[this.cursol][2]!="7"){
+          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2] != "2"&&this[this.mode.qa].number[this.cursol][2]!="7"){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -849,7 +850,7 @@ class Puzzle{
           break;
         case "7":
           this.record("number",this.cursol);
-          if(this[this.mode.qa].number[this.cursol]&&this[this.mode.qa].number[this.cursol][2]==="7"){
+          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2]==="7"){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -858,7 +859,7 @@ class Puzzle{
           this[this.mode.qa].number[this.cursol] = [number,this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1],this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]];
           break;
         case "8":
-          if(this[this.mode.qa].number[this.cursol]){
+          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2] != "2"&&this[this.mode.qa].number[this.cursol][2]!="7"){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";

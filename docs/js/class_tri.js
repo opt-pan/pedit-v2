@@ -265,45 +265,72 @@ class Puzzle_tri extends Puzzle{
   }
 
   key_arrow(key_code){
-    var a;/*
+    var a,b,c;
+    if(this.theta === 0){b = [0,1,2,3];}
+    else if(this.theta===90){b = [3,0,1,2];}
+    else if(this.theta===180){b = [2,3,0,1];}
+    else if(this.theta===270){b = [1,2,3,0];}
+    if (this.reflect[0]===-1){
+      c = b[0];
+      b[0] = b[2];
+      b[2] = c;
+    }
+    if (this.reflect[1]===-1){
+      c = b[1];
+      b[1] = b[3];
+      b[3] = c;
+    }
+    switch(key_code){
+      case "ArrowLeft":
+        c = b[0];
+        break;
+      case "ArrowUp":
+        c = b[1];
+        break;
+      case "ArrowRight":
+        c = b[2];
+        break;
+      case "ArrowDown":
+        c = b[3];
+        break;
+      }
     if (this.mode[this.mode.qa].edit_mode === "number" || this.mode[this.mode.qa].edit_mode === "symbol"){
-      if (this.mode[this.mode.qa].edit_mode === "number" && this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "3"){
-        switch(key_code){
-          case "ArrowLeft":
-            if (this.cursolSx > 0){this.cursolSx -= 1;}
-            break;
-          case "ArrowUp":
-            if (this.cursolSy > 0){this.cursolSy -= 1;}
-            break;
-          case "ArrowRight":
-            if (this.cursolSx < 2*this.nx-1){this.cursolSx += 1;}
-            break;
-          case "ArrowDown":
-            if (this.cursolSy < 2*this.ny-1){this.cursolSy += 1;}
-            break;
-        }
-      }else{
-        switch(key_code){
-          case "ArrowLeft":
-            a = this.cursol-1;
+      if(parseInt(this.cursol/(this.n0)**2)===1){
+        switch(c){
+          case 0:
+            a = this.point[this.cursol].adjacent[0];
             if (this.point[a].use===1){this.cursol = a;}
             break;
-          case "ArrowUp":
-            a = this.cursol-(this.n0);
+          case 1:
+            break;
+          case 2:
+            a = this.point[this.cursol].adjacent[1];
             if (this.point[a].use===1){this.cursol = a;}
             break;
-          case "ArrowRight":
-            a = this.cursol+1;
-            if (this.point[a].use===1){this.cursol = a;}
-            break;
-          case "ArrowDown":
-            a = this.cursol+(this.n0);
+          case 3:
+            a = this.point[this.cursol].adjacent[2];
             if (this.point[a].use===1){this.cursol = a;}
             break;
         }
+      }else if(parseInt(this.cursol/(this.n0)**2)===2){
+          switch(c){
+            case 0:
+              a = this.point[this.cursol].adjacent[1];
+              if (this.point[a].use===1){this.cursol = a;}
+              break;
+            case 1:
+              a = this.point[this.cursol].adjacent[0];
+              if (this.point[a].use===1){this.cursol = a;}
+              break;
+            case 2:
+              a = this.point[this.cursol].adjacent[2];
+              if (this.point[a].use===1){this.cursol = a;}
+              break;
+            case 3:
+              break;
+          }
       }
     }
-    */
     this.redraw();
   }
 ////////////////draw/////////////////////
@@ -377,7 +404,7 @@ class Puzzle_tri extends Puzzle{
       var verticelist=[];
       for(var i =0; i<this.centerlist.length;i++){
         for(var j =0; j<this.point[this.centerlist[i]].surround.length;j++){
-          verticelist.push(this.point[this.centerlist[i]].surround[j])
+          verticelist.push(this.point[this.centerlist[i]].surround[j]);
         }
       }
       verticelist = Array.from(new Set(verticelist));
@@ -392,8 +419,6 @@ class Puzzle_tri extends Puzzle{
   draw_surface(pu) {
     for(var i in this[pu].surface){
         set_surface_style(this.ctx,this[pu].surface[i]);
-        this.ctx.strokeStyle = this.ctx.fillStyle;
-        this.ctx.lineWidth = 0.5;
         this.ctx.beginPath();
         this.ctx.moveTo(this.point[this.point[i].surround[0]].x,this.point[this.point[i].surround[0]].y);
         for(var j=1;j<this.point[i].surround.length;j++){

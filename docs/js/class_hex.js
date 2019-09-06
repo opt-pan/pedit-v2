@@ -393,7 +393,7 @@ class Puzzle_hex extends Puzzle{
       var verticelist=[];
       for(var i =0; i<this.centerlist.length;i++){
         for(var j =0; j<this.point[this.centerlist[i]].surround.length;j++){
-          verticelist.push(this.point[this.centerlist[i]].surround[j])
+          verticelist.push(this.point[this.centerlist[i]].surround[j]);
         }
       }
       verticelist = Array.from(new Set(verticelist));
@@ -408,8 +408,6 @@ class Puzzle_hex extends Puzzle{
   draw_surface(pu) {
     for(var i in this[pu].surface){
         set_surface_style(this.ctx,this[pu].surface[i]);
-        this.ctx.strokeStyle = this.ctx.fillStyle;
-        this.ctx.lineWidth = 0.5;
         this.ctx.beginPath();
         this.ctx.moveTo(this.point[this.point[i].surround[0]].x,this.point[this.point[i].surround[0]].y);
         for(var j=1;j<this.point[i].surround.length;j++){

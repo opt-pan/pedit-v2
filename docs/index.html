@@ -2,17 +2,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>pedit-v2</title>
+    <title>Penpa</title>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=480">
     <link href="./css/main.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="./js/main.js"></script>
-    <script type="text/javascript" src="./js/class_p.js"></script>
 
+    <script type="text/javascript" src="./js/class_p.js"></script>
     <script type="text/javascript" src="./js/class_square.js"></script>
     <script type="text/javascript" src="./js/class_hex.js"></script>
     <script type="text/javascript" src="./js/class_tri.js"></script>
+    <script type="text/javascript" src="./js/class_pyramid.js"></script>
     <script type="text/javascript" src="./js/class_panel.js"></script>
 
     <script type="text/javascript" src="./js/style.js"></script>
@@ -31,7 +32,7 @@
         <input type="button" id="saveimage" value="画像保存" class="button"/>
         <input type="button" id="savetext" value="アドレス出力" class="button"/>
         <a id="download_link"></a>
-        <input type="button" id="duplicate" value="複製" class="button"/ onclick="duplicate();">
+        <input type="button" id="duplicate" value="複製" class="button" onclick="duplicate();"/>
       </div>
 
       <div id="buttons">
@@ -430,6 +431,7 @@
               <option value="square" selected = "selected">正方形</option>
               <option value="hex">正六角形</option>
               <option value="tri">正三角形</option>
+              <option value="pyramid">ピラミッド</option>
           </select>
         </span><br><!--
       --><h4 id="div_all"><label class="label_nb">サイズ：</label></h4><!--
@@ -520,7 +522,7 @@
           <input type="radio" name="nb_margin" value="1" id="nb_margin1" checked="checked">
           <label for="nb_margin1" class="label" id="nb_margin1_lb">あり</label>
           <input type="radio" name="nb_margin" value="2" id="nb_margin2">
-          <label for="nb_margin2" class="label"id="nb_margin2_lb">なし</label>
+          <label for="nb_margin2" class="label" id="nb_margin2_lb">なし</label>
           <br><br>
           <span>ファイル名：<input type="text" value="Image.png" id="saveimagename"></span>
         </div>
@@ -536,30 +538,29 @@
     <div id="modal-rotate" class="modal">
       <div id="modal-rotate-content">
         <div id="modal-header">
-          <h3 id="savetexttitle">回転反転</h3>
+          <h3 id="savetexttitle">回転・移動</h3>
         </div>
         <div class="nb_button">
           <h4 id="div_all"><label>　回転：</label></h4>
-          <input type="button" id="rt_left" value="←"/>
-          <input type="button" id="rt_right" value="→"/>
+          <input type="button" id="rt_left" value="&larr;"/>
+          <input type="button" id="rt_right" value="&rarr;"/>
         </div>
         <div class="nb_button">
           <h4 id="div_all"><label>　反転：</label></h4>
-          <input type="button" id="rt_LR" value="&#x2194"/>
-          <input type="button" id="rt_UD" value="&#x2195"/>
+          <input type="button" id="rt_LR" value="&harr;"/>
+          <input type="button" id="rt_UD" value="&#8597;"/>
         </div>
         <br>
         <div class="nb_button">
-          <h4 id="div_all"><label>　画面：</label></h4>
+          <h4 id="div_all"><label>　移動：</label></h4>
           <br>
           <input type="button" id="rt_center" value="盤面を中央に移動"/><br>
-          <input type="button" id="rt_size" value="画面サイズを盤面に合わせる"/>
+          <input type="button" id="rt_size" value="画面サイズを盤面に合わせる"/><br>
           <input type="button" id="rt_reset" value="画面設定をリセット"/>
         </div>
         <br>
         <div class="nb_button">
           <input type="button" id="closeBtn_rotate1" value="閉じる"/>
-        </div>
         </div>
       </div>
     </div>

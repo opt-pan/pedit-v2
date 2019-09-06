@@ -4,6 +4,10 @@
 /////////////////////////////
 
 function set_surface_style(ctx,type){
+    ctx.setLineDash([]);
+    ctx.lineDashOffset = 0;
+    ctx.lineCap = "square";
+    ctx.lineWidth = 0.5;
     switch(type){
       case 0:
         ctx.fillStyle = "rgba(255,255,255,0)";
@@ -36,6 +40,7 @@ function set_surface_style(ctx,type){
         ctx.fillStyle = "#f0f0f0";  //黄
         break;
     }
+    ctx.strokeStyle = ctx.fillStyle;
 }
 function set_line_style(ctx,type){
     //初期化
@@ -221,7 +226,6 @@ function set_font_style(ctx,size,type){
       break;
     case 3:
       ctx.fillStyle = "#999999";
-      //ctx.fillStyle = "#0000cb";
       ctx.strokeStyle = "rgba(255,255,255,0)";
       break;
     case 4:
