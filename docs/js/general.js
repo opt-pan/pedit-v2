@@ -214,6 +214,7 @@ function edge_onoff(){
     document.getElementById('edge_button').textContent = "OFF";
     pu.cursol = pu.centerlist[0];
   }
+  pu.type = pu.type_set();
   pu.redraw();
 }
 
