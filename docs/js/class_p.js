@@ -1547,7 +1547,6 @@ class Puzzle{
       }
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       if (this.mode[this.mode.qa].edit_mode === "number" && (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "3"||this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "9")){
-        console.log(this.cursolS);
         this.draw_polygon(this.ctx,this.point[this.cursolS].x,this.point[this.cursolS].y,0.2,4,45);
       }else if(document.getElementById('edge_button').textContent === "ON"){
         this.draw_polygon(this.ctx,this.point[this.cursol].x,this.point[this.cursol].y,0.2,4,45);
