@@ -40,8 +40,8 @@ class Panel{
     }
     for(var i = 0 ; i < this.nxf*this.nyf ; i++){
       set_font_style(this.ctxf,0.8*this.sizef.toString(10),pu.mode[pu.mode.qa][pu.mode[pu.mode.qa].edit_mode][1]);
-      if(this.ctxf.fillStyle === "#ffffff"){this.ctxf.fillStyle = "#000000";}
-      this.ctxf.text(this.cont[i].toString(),(i%this.nxf+0.45)*(this.sizef+this.spacef),((i/this.nxf|0)+0.55)*(this.sizef+this.spacef));
+      this.ctxf.strokeText(this.cont[i].toString(),(i%this.nxf+0.45)*(this.sizef+this.spacef),((i/this.nxf|0)+0.55)*(this.sizef+this.spacef));
+      this.ctxf.fillText(this.cont[i].toString(),(i%this.nxf+0.45)*(this.sizef+this.spacef),((i/this.nxf|0)+0.55)*(this.sizef+this.spacef));
     }
   }
 
@@ -56,7 +56,7 @@ class Panel{
           this.fkb.style.paddingTop = "0px";
           this.fkb.style.display = "block";
           this.fkm.style.display = "flex";
-          this.cont = [1,2,3,4,5,6,7,8,9,0,"\u{21B2}",""];
+          this.cont = [1,2,3,4,5,6,7,8,9,0,"?",""];
           this.draw_number();
           break;
         case "alphabet":
@@ -68,7 +68,7 @@ class Panel{
           this.fkb.style.display = "block";
           this.fkm.style.display = "flex";
           this.cont = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O",
-          "P","Q","R","S","T","U","V","W","X","Y","Z","!","?","\u{2423}",""];
+          "P","Q","R","S","T","U","V","W","X","Y","Z","!","?","_",""];
           this.draw_number();
           break;
         case "key_symbol":

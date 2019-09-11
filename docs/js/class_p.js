@@ -44,9 +44,7 @@ class Puzzle{
     this.resol = 2.5;//window.devicePixelRatio || 1;
     this.canvasx = 0;//predefine
     this.canvasy = 0;//predefine
-    this.center_n = 0;
-    this.center_n0 = 0;
-    this.margin = 6;
+    this.margin = 5;
 
     this.canvas = document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
@@ -81,11 +79,11 @@ class Puzzle{
               "board":["",""]},
       "pu_a":{"edit_mode":"surface",
               "surface":["",1],
-              "line":["1",3],
+              "line":["1",1],
               "lineE":["1",3],
-              "wall":["",3],
+              "wall":["",1],
               "cage":["",10],
-              "number":["1",2],
+              "number":["1",1],
               "symbol":["circle_L",2],
               "special":["thermo",""],
               "board":["",""]}
@@ -93,35 +91,6 @@ class Puzzle{
     this.theta = 0;
     this.reflect = [1,1];
     this.centerlist = [];
-
-    this.replace = [
-      ["\"qa\"","z9"],
-      ["\"pu_q\"","zQ"],
-      ["\"pu_a\"","zA"],
-      ["\"grid\"","zG"],
-      ["\"edit_mode\"","zM"],
-      ["\"surface\"","zS"],
-      ["\"line\"","zL"],
-      ["\"lineE\"","zE"],
-      ["\"wall\"","zW"],
-      ["\"cage\"","zC"],
-      ["\"number\"","zN"],
-      ["\"symbol\"","zY"],
-      ["\"special\"","zP"],
-      ["\"board\"","zB"],
-      ["\"command_redo\"","zR"],
-      ["\"command_undo\"","zU"],
-      ["\"numberS\"","z1"],
-      ["\"freeline\"","zF"],
-      ["\"freelineE\"","z2"],
-      ["\"thermo\"","zT"],
-      ["\"arrows\"","z3"],
-      ["\"direction\"","zD"],
-      ["\"squareframe\"","z0"],
-      ["\"deletelineE\"","z4"],
-      ["\"__a\"","z_"],
-      ["null","zO"],
-    ]
   }
 
   reset(){
@@ -231,15 +200,7 @@ class Puzzle{
   reset_frame_newgrid(){
     this.canvasxy_update(0);
     this.create_point();
-    this.search_center();
     this.canvas_size_setting();
-    this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),this.theta);
-    if(this.reflect[0]===-1){
-      this.point_reflect_LR();
-    }
-    if(this.reflect[1]===-1){
-      this.point_reflect_UD();
-    }
     this.make_frameline();
   }
 
@@ -271,45 +232,17 @@ class Puzzle{
   }
 
   point_move(x,y,theta){
-    var x0 = this.canvasx*0.5+0.5;//canvasの中心+0.5で回転させる、平行移動時にはx,yを+0.5で入力
-    var y0 = this.canvasy*0.5+0.5;
-    var x1,y1,x2,y2;
+    var x0 = this.point[this.center_n].x;
+    var y0 = this.point[this.center_n].y;
+    var x1,y1;
     theta = theta/180*Math.PI;
     for (var i in this.point){
-      x1 = this.point[i].x + x;
-      y1 = this.point[i].y + y;
-      x2 = (x1-x0)*Math.cos(theta)-(y1-y0)*Math.sin(theta) + x0;
-      y2 = (x1-x0)*Math.sin(theta)+(y1-y0)*Math.cos(theta) + y0;
-      this.point[i].x = x2;
-      this.point[i].y = y2;
+      x1 = (this.point[i].x-x0)*Math.cos(theta)-(this.point[i].y-y0)*Math.sin(theta) + x0 + x*this.size;
+      y1 = (this.point[i].x-x0)*Math.sin(theta)+(this.point[i].y-y0)*Math.cos(theta) + y0 + y*this.size;
+      this.point[i].x = x1;
+      this.point[i].y = y1;
     }
     this.point_usecheck();
-  }
-
-  search_center(){
-    var xmax = 0,xmin = 1e5;
-    var ymax = 0,ymin = 1e5;
-    for (var i of this.centerlist){
-      if(this.point[i].x>xmax){xmax = this.point[i].x;}
-      if(this.point[i].x<xmin){xmin = this.point[i].x;}
-      if(this.point[i].y>ymax){ymax = this.point[i].y;}
-      if(this.point[i].y<ymin){ymin = this.point[i].y;}
-    }
-    var x = (xmax+xmin)/2;
-    var y = (ymax+ymin)/2;
-    this.width = (xmax-xmin)/this.size+2;
-    this.height = (ymax-ymin)/this.size+2;
-
-    var min0,min = 10e6;
-    var num = 0;
-    for (var i in this.point){
-        min0 = (x-this.point[i].x)**2+(y-this.point[i].y)**2;
-        if(min0<min){
-          min = min0;
-          num = i;
-        }
-    }
-    this.center_n = parseInt(num);
   }
 
   rotate_UD(){
@@ -325,7 +258,7 @@ class Puzzle{
   }
 
   point_reflect_LR(){
-    var x0 = this.canvasx*0.5+0.5;
+    var x0 = this.point[this.center_n].x;
     for (var i in this.point){
       this.point[i].x = 2*x0-this.point[i].x;
     }
@@ -333,57 +266,21 @@ class Puzzle{
   }
 
   point_reflect_UD(){
-    var y0 = this.canvasy*0.5+0.5;
+    var y0 = this.point[this.center_n].y;
     for (var i in this.point){
       this.point[i].y = 2*y0-this.point[i].y;
     }
     this.point_usecheck();
   }
 
-  rotate_center(){
-    this.search_center();
-    this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),0);
-    this.point_usecheck();
-    this.redraw();
-  }
-
-  rotate_size(){
-    this.search_center();
-    this.width_c = this.width;
-    this.height_c = this.height;
-    this.canvasxy_update(0);
-    this.canvas_size_setting();
-    this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),0);
-    this.point_usecheck();
-    this.redraw();
-  }
-
-  rotate_reset(){
-    this.width_c = this.width0;
-    this.height_c = this.height0;
-    this.center_n = this.center_n0; //reset for maketext
-    this.canvasxy_update(0);
-    this.canvas_size_setting();
-    this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),0);
-    this.redraw();
-  }
-
   point_usecheck(){
-    for(var i in this.point){
-      if(this.point[i].use === -1){
-        ;
-      }else if (this.point[i].x<this.margin ||this.point[i].x>this.canvasx-this.margin || this.point[i].y<this.margin ||this.point[i].y>this.canvasy-this.margin){
+    for (var i in this.point){
+      if (this.point[i].x<this.margin ||this.point[i].x>this.canvasx-this.margin || this.point[i].y<this.margin ||this.point[i].y>this.canvasy-this.margin){
         this.point[i].use = 0;
       }else{
         this.point[i].use = 1;
       }
     }
-  }
-
-  canvasxy_update(space){//space for imagesave
-    this.size = parseInt(document.getElementById("nb_size3").value);
-    this.canvasx = (this.width_c)*this.size;
-    this.canvasy = (this.height_c)*this.size;
   }
 
   canvas_size_setting(){
@@ -399,86 +296,40 @@ class Puzzle{
   resizecanvas(){
     var resizedCanvas = document.createElement("canvas");
     var resizedContext = resizedCanvas.getContext("2d");
+
     var mode = this.mode[this.mode.qa].edit_mode;
-
-    var cx = this.canvasx;
-    var cy = this.canvasy;
-
+    var move = 0;
     this.mode[this.mode.qa].edit_mode = "surface"; //選択枠削除用
     if (document.getElementById("nb_margin2").checked){
-      var {yu,yd,xl,xr} = this.gridspace_calculate();
-      this.canvasx = xr-xl;
-      this.canvasy = yd-yu;
-      this.point_move(-xl,-yu,0);
+      move = 0.25;
+      this.canvasxy_update(0.5);
+      this.point_move(-move,-move,0);
       this.canvas_size_setting();
-      this.redraw();
     }
-
+    this.redraw();
     var width = this.canvas.width/1.5;
     resizedCanvas.width = width.toString();
     resizedCanvas.height = (width*this.canvas.height/this.canvas.width).toString();
 
+    const steps = (resizedCanvas.width / this.canvas.width)>>1;
+    resizedContext.filter = `blur(0px)`;
+
     resizedContext.drawImage(this.canvas, 0, 0, resizedCanvas.width, resizedCanvas.height);
     var canvastext = resizedCanvas.toDataURL("image/png")
+
     this.mode[this.mode.qa].edit_mode = mode;
-
-    if (document.getElementById("nb_margin2").checked){
-      this.canvasx = cx;
-      this.canvasy = cy;
-      this.point_move(xl,yu,0);
-      this.canvas_size_setting();
-      this.redraw();
-    }
-    return canvastext;
-  }
-
-  gridspace_calculate(){
+    this.canvasxy_update(0);
+    this.point_move(move,move,0);
+    this.canvas_size_setting();
     this.redraw();
-    // ピクセルデータから計算
-    var pixels = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-    var data = pixels.data;
-    var textHeight = 0;
-    var currentRow = -1
 
-    for (var i = 0, len = data.length; i < len; i += 4) {
-      var r = data[i], g = data[i+1], b = data[i+2], alpha = data[i+3];
-      if (r != 255 || g != 255 || b != 255) {
-        var yu = (Math.floor((i / 4) / this.canvas.width))/this.resol;
-        break;
-      }
-    };
-    for (var i = data.length-4; i > 0; i -= 4) {
-      var r = data[i], g = data[i+1], b = data[i+2], alpha = data[i+3];
-      if (r != 255 || g != 255 || b != 255) {
-        var yd = (Math.floor((i / 4) / this.canvas.width)+1)/this.resol;
-        break;
-      }
-    }
-    for (var i = 0, len = data.length; i < len; i += 4) {
-      var j = ((i/4)%this.canvas.height)*this.canvas.width*4+Math.floor((i/4)/this.canvas.height)*4;
-      var r = data[j], g = data[j+1], b = data[j+2], alpha = data[j+3];
-      if (r != 255 || g != 255 || b != 255) {
-        var xl = (((j / 4) % this.canvas.width))/this.resol;
-        break;
-      }
-    };
-    for (var i = data.length-4; i > 0; i -= 4) {
-      var j = ((i/4)%this.canvas.height)*this.canvas.width*4+Math.floor((i/4)/this.canvas.height)*4;
-      var r = data[j], g = data[j+1], b = data[j+2], alpha = data[j+3];
-      if (r != 255 || g != 255 || b != 255) {
-        var xr = (((j / 4) % this.canvas.width)+1)/this.resol;
-        break;
-      }
-    }
-
-    return {yu,yd,xl,xr};
+    return canvastext;
   }
 
   mode_set(mode){
     this.mode[this.mode.qa].edit_mode = mode;
-    this.type = this.type_set();
     if(mode === "number"){
-      document.getElementById("sub_txt").innerHTML = "サブ";
+      document.getElementById("sub_txt").innerHTML = "サブ：";
     }else{
       document.getElementById("sub_txt").innerHTML = "　サブ：";
     }
@@ -619,22 +470,12 @@ class Puzzle{
     maketext(){
       var text = "";
       text = this.gridtype + "," + this.nx.toString() + "," + this.ny.toString() + "," + this.size.toString() + "," +
-              this.theta.toString() + "," + this.reflect.toString() + "," + this.canvasx + "," + this.canvasy +","+ this.center_n +","+this.center_n0 +"\n";
+              this.theta.toString() + "," + this.reflect.toString() + "\n";
       text += JSON.stringify(this.space) + "\n";
       text += JSON.stringify(this.mode) + "\n";
       text += JSON.stringify(this.pu_q) + "\n";
       text += JSON.stringify(this.pu_a) + "\n";
-
-      var list=[this.centerlist[0]];
-      for (var i = 1;i<this.centerlist.length;i++){
-        list.push(this.centerlist[i]-this.centerlist[i-1]);
-      }
-
-      text += JSON.stringify(list);
-
-      for (var i=0;i<this.replace.length;i++){
-        text = text.split(this.replace[i][0]).join(this.replace[i][1]);
-      }
+      text += JSON.stringify(this.centerlist);
 
       var u8text = new TextEncoder().encode(text);
       var deflate = new Zlib.RawDeflate(u8text);
@@ -649,27 +490,11 @@ class Puzzle{
     maketext_solve(){
       var text = "";
       text = this.gridtype + "," + this.nx.toString() + "," + this.ny.toString() + "," + this.size.toString() + "," +
-              this.theta.toString() + "," + this.reflect.toString() + "," + this.canvasx + "," + this.canvasy +","+ this.center_n +","+this.center_n0 +"\n";
+              this.theta.toString() + "," + this.reflect.toString() + "\n";
       text += JSON.stringify(this.space) + "\n";
       text += JSON.stringify(this.mode.grid) + "\n";
-
-      var r = this.pu_q.command_redo.__a;
-      var u = this.pu_q.command_undo.__a;
-      this.pu_q.command_redo.__a = [];
-      this.pu_q.command_undo.__a = [];
-      text += JSON.stringify(this.pu_q) + "\n"+ "\n";
-      this.pu_q.command_redo.__a = r;
-      this.pu_q.command_undo.__a = u;
-
-      var list=[this.centerlist[0]];
-      for (var i = 1;i<this.centerlist.length;i++){
-        list.push(this.centerlist[i]-this.centerlist[i-1]);
-      }
-      text += JSON.stringify(list);
-
-      for (var i=0;i<this.replace.length;i++){
-        text = text.split(this.replace[i][0]).join(this.replace[i][1]);
-      }
+      text += JSON.stringify(this.pu_q) + "\n";
+      text += JSON.stringify(this.centerlist);
 
       var u8text = new TextEncoder().encode(text);
       var deflate = new Zlib.RawDeflate(u8text);
@@ -769,7 +594,7 @@ class Puzzle{
           break;
         case "2":
           this.record("number",this.cursol);
-          if(this[this.mode.qa].number[this.cursol] && this[this.mode.qa].number[this.cursol][2] != "7"){
+          if(this[this.mode.qa].number[this.cursol]){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -825,7 +650,7 @@ class Puzzle{
           this[this.mode.qa].number[this.cursol] = [number,this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1],this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]];
           break;
         case "5":
-          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2] != "2"&&this[this.mode.qa].number[this.cursol][2]!="7"){
+          if(this[this.mode.qa].number[this.cursol]){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -837,7 +662,7 @@ class Puzzle{
           }
           break;
         case "6":
-          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2] != "2"&&this[this.mode.qa].number[this.cursol][2]!="7"){
+          if(this[this.mode.qa].number[this.cursol]){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -850,7 +675,7 @@ class Puzzle{
           break;
         case "7":
           this.record("number",this.cursol);
-          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2]==="7"){
+          if(this[this.mode.qa].number[this.cursol]){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -859,7 +684,7 @@ class Puzzle{
           this[this.mode.qa].number[this.cursol] = [number,this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1],this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]];
           break;
         case "8":
-          if(this[this.mode.qa].number[this.cursol]&& this[this.mode.qa].number[this.cursol][2] != "2"&&this[this.mode.qa].number[this.cursol][2]!="7"){
+          if(this[this.mode.qa].number[this.cursol]){
             con = this[this.mode.qa].number[this.cursol][0];
           }else{
             con = "";
@@ -985,6 +810,7 @@ class Puzzle{
   //
   /////////////////////////////
   drawonDown(num){
+    num = parseInt(num);
     switch(this.mode[this.mode.qa].edit_mode){
       case "surface":
         this.re_surface(num);
@@ -1056,6 +882,7 @@ class Puzzle{
   }
 
   drawonDownR(num){//右クリック
+    num = parseInt(num);
     switch(this.mode[this.mode.qa].edit_mode){
       case "surface":
         this.re_surfaceR(num);
@@ -1079,13 +906,14 @@ class Puzzle{
   }
 
   drawonUp(num){
+    num = parseInt(num);
     switch(this.mode[this.mode.qa].edit_mode){
       case "surface":
         this.drawing_surface = -1;
         this.last = -1;
         break;
       case "line":
-        if(pu.point[num].use===1){
+        if(pu.point[num].use!=0){
           if (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "3"){
             this.re_lineup_free(num);
           }
@@ -1094,7 +922,7 @@ class Puzzle{
         this.last = -1;
         break;
       case "lineE":
-        if(pu.point[num].use===1){
+        if(pu.point[num].use!=0){
           if (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "3"){
             this.re_lineup_free(num);
           }
@@ -1115,7 +943,7 @@ class Puzzle{
         this.last = -1;
         break;
       case "special":
-        if(pu.point[num].use===1){
+        if(pu.point[num].use!=0){
           if(this.point[num].type === 0){
             this.re_specialup(num,this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]);
           }
@@ -1132,6 +960,7 @@ class Puzzle{
   }
 
   drawonMove(num){
+    num = parseInt(num);
     if (num != this.last){ //別のセルに移動したら
       switch(this.mode[this.mode.qa].edit_mode){
         case "surface":
@@ -1282,6 +1111,7 @@ class Puzzle{
 
   re_board(num){
     var index = this.centerlist.indexOf(num);
+    //this.record("centerlist",num);
     if(index===-1){
       this.centerlist.push(num);
       this.drawing_board = 1;
