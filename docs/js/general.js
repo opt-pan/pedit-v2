@@ -92,6 +92,15 @@ function make_class(gridtype){
         alert("一辺:1~20 サイズ:15~60");
       }
       break;
+    case "iso":
+      var n0 = parseInt(document.getElementById("nb_size1").value,10);
+      var space1 = parseInt(document.getElementById("nb_space1").value,10);
+      if(n0<=20 && n0>0 && 15<=size && size<=60 && space1<n0/3){
+        pu = new Puzzle_iso(n0,n0,size);
+      }else{
+        alert("一辺:1~20 サイズ:15~60");
+      }
+      break;
   }
   return pu;
 }

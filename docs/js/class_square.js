@@ -27,6 +27,7 @@ class Puzzle_square extends Puzzle{
     this.onoff_symbolmode_list = {
       "cross":4,
       "arrow_cross":4,
+      "arrow_fourtip":4,
       "degital":7,
       "degital_f":7,
       "arrow_eight":8,
@@ -630,6 +631,16 @@ class Puzzle_square extends Puzzle{
           var y2 = (1-r)*this.point[i1].y+r*this.point[i2].y;
           this.ctx.moveTo(x1,y1);
           this.ctx.lineTo(x2,y2);
+        }else if(this[pu].line[i] === 30){
+          var r = 0.15*this.size;
+          var dx = this.point[i1].x-this.point[i2].x;
+          var dy = this.point[i1].y-this.point[i2].y;
+          var d = Math.sqrt(dx**2+dy**2);
+          this.ctx.moveTo(this.point[i1].x-r/d*dy,this.point[i1].y+r/d*dx);
+          this.ctx.lineTo(this.point[i2].x-r/d*dy,this.point[i2].y+r/d*dx);
+          this.ctx.stroke();
+          this.ctx.moveTo(this.point[i1].x+r/d*dy,this.point[i1].y-r/d*dx);
+          this.ctx.lineTo(this.point[i2].x+r/d*dy,this.point[i2].y-r/d*dx);
         }else{
           this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
           this.ctx.lineTo(this.point[i2].x,this.point[i2].y);
@@ -656,8 +667,20 @@ class Puzzle_square extends Puzzle{
         var i1 = i.split(",")[0];
         var i2 = i.split(",")[1];
         this.ctx.beginPath();
-        this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
-        this.ctx.lineTo(this.point[i2].x,this.point[i2].y);
+        if(this[pu].lineE[i] === 30){
+          var r = 0.15*this.size;
+          var dx = this.point[i1].x-this.point[i2].x;
+          var dy = this.point[i1].y-this.point[i2].y;
+          var d = Math.sqrt(dx**2+dy**2);
+          this.ctx.moveTo(this.point[i1].x-r/d*dy,this.point[i1].y+r/d*dx);
+          this.ctx.lineTo(this.point[i2].x-r/d*dy,this.point[i2].y+r/d*dx);
+          this.ctx.stroke();
+          this.ctx.moveTo(this.point[i1].x+r/d*dy,this.point[i1].y-r/d*dx);
+          this.ctx.lineTo(this.point[i2].x+r/d*dy,this.point[i2].y-r/d*dx);
+        }else{
+          this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
+          this.ctx.lineTo(this.point[i2].x,this.point[i2].y);
+        }
         this.ctx.stroke();
       }
     }
@@ -670,8 +693,20 @@ class Puzzle_square extends Puzzle{
         var i1 = i.split(",")[0];
         var i2 = i.split(",")[1];
         this.ctx.beginPath();
-        this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
-        this.ctx.lineTo(this.point[i2].x,this.point[i2].y);
+        if(this[pu].freeline[i] === 30){
+          var r = 0.15*this.size;
+          var dx = this.point[i1].x-this.point[i2].x;
+          var dy = this.point[i1].y-this.point[i2].y;
+          var d = Math.sqrt(dx**2+dy**2);
+          this.ctx.moveTo(this.point[i1].x-r/d*dy,this.point[i1].y+r/d*dx);
+          this.ctx.lineTo(this.point[i2].x-r/d*dy,this.point[i2].y+r/d*dx);
+          this.ctx.stroke();
+          this.ctx.moveTo(this.point[i1].x+r/d*dy,this.point[i1].y-r/d*dx);
+          this.ctx.lineTo(this.point[i2].x+r/d*dy,this.point[i2].y-r/d*dx);
+        }else{
+          this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
+          this.ctx.lineTo(this.point[i2].x,this.point[i2].y);
+        }
         this.ctx.stroke();
     }
   }
@@ -1118,6 +1153,10 @@ class Puzzle_square extends Puzzle{
       case "arrow_eight":
         set_circle_style(ctx,2);
         this.draw_arroweight(ctx,num,x,y);
+        break;
+      case "arrow_fourtip":
+        set_circle_style(ctx,2);
+        this.draw_arrowfourtip(ctx,num,x,y);
         break;
 
       /* special */
@@ -1741,6 +1780,7 @@ class Puzzle_square extends Puzzle{
       }
     }
   }
+
   draw_arrow8(ctx,num,x,y,len1,len2,w1,w2,ri){
     var th;
     if(num === 2||num===4||num===6||num===8){
@@ -1749,6 +1789,31 @@ class Puzzle_square extends Puzzle{
     }
     if(num>0&&num<=8){
       th = this.rotate_theta((num-1)*45-180);
+      ctx.beginPath();
+      ctx.arrow(x-len1*pu.size*Math.cos(th), y-len1*pu.size*Math.sin(th),x+len2*pu.size*Math.cos(th), y+len2*pu.size*Math.sin(th),
+                [0, w1*pu.size, ri*pu.size, w1*pu.size, ri*pu.size, w2*pu.size]);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+
+  draw_arrowfourtip(ctx,num,x,y){
+    var len1 = 0.5; //nemoto
+    var len2 = -0.25; //tip
+    var w1 = 0.0;
+    var w2 = 0.2;
+    var ri = 0.0;
+    for(var i=0;i<4;i++){
+      if(num[i] === 1){
+        this.draw_arrow4(ctx,i+1,x,y,len1,len2,w1,w2,ri);
+      }
+    }
+  }
+
+  draw_arrow4(ctx,num,x,y,len1,len2,w1,w2,ri){
+    var th;
+    if(num>0&&num<=4){
+      th = this.rotate_theta((num-1)*90);
       ctx.beginPath();
       ctx.arrow(x-len1*pu.size*Math.cos(th), y-len1*pu.size*Math.sin(th),x+len2*pu.size*Math.cos(th), y+len2*pu.size*Math.sin(th),
                 [0, w1*pu.size, ri*pu.size, w1*pu.size, ri*pu.size, w2*pu.size]);
@@ -2033,6 +2098,12 @@ class Puzzle_square extends Puzzle{
         break;
       case 6:
         this.draw_battleship_tip(ctx,x,y,270);
+        break;
+      case 7:
+        set_font_style(ctx,0.8*pu.size.toString(10),1);
+        ctx.text("～",x,y-0.11*pu.size);
+        ctx.text("～",x,y+0.09*pu.size);
+        ctx.text("～",x,y+0.29*pu.size);
         break;
     }
   }

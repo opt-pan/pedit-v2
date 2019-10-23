@@ -51,7 +51,7 @@ class Puzzle{
     this.canvas = document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
     this.obj = document.getElementById("dvique");
-    this.group1 = ["cage_lb","sub_line2_lb","sub_lineE2_lb","sub_number9_lb","ms_tri","ms_pencils"];
+    this.group1 = ["cage_lb","sub_line2_lb","sub_lineE2_lb","sub_number9_lb","ms_tri","ms_pencils","ms_arrow_fourtip"];
     this.group2 = ["wall_lb","sub_number2_lb","sub_number3_lb","sub_number6_lb","ms4","ms5"];
 
     //描画位置
@@ -1547,6 +1547,7 @@ class Puzzle{
       }
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       if (this.mode[this.mode.qa].edit_mode === "number" && (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "3"||this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "9")){
+        console.log(this.cursolS);
         this.draw_polygon(this.ctx,this.point[this.cursolS].x,this.point[this.cursolS].y,0.2,4,45);
       }else if(document.getElementById('edge_button').textContent === "ON"){
         this.draw_polygon(this.ctx,this.point[this.cursol].x,this.point[this.cursol].y,0.2,4,45);
