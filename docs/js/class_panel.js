@@ -104,7 +104,7 @@ class Panel{
           this.fkb.style.paddingTop = "0px";
           this.fkb.style.display = "block";
           this.fkm.style.display = "flex";
-          this.str = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふめもまみむめも"+
+          this.str = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめも"+
           "やゆよ　　らりるれろわをん　　がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっ　ー。、　　"
           this.cont = this.str.split("");
           this.draw_number();
