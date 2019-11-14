@@ -364,7 +364,7 @@ function duplicate(){
 }
 
 function load(urlParam){
-  //try{
+  try{
     var param = urlParam.split('&');
     var paramArray = [];
 
@@ -418,7 +418,12 @@ function load(urlParam){
     }
 
     if(paramArray.m === "edit"){  //edit_mode
-      pu.mode = JSON.parse(rtext[2]);
+      var mode = JSON.parse(rtext[2]);
+      for (var i in mode){
+        for ( var j in mode[i]){
+          pu.mode[i][j] = mode[i][j];
+        }
+      }
       pu.pu_q = JSON.parse(rtext[3]);
       pu.pu_a = JSON.parse(rtext[4]);
       pu.centerlist = rtext[5];
@@ -471,9 +476,9 @@ function load(urlParam){
     panel_pu.draw_panel();
     pu.mode_qa(pu.mode.qa); //include redraw
     pu.mode_set(pu.mode[pu.mode.qa].edit_mode); //include redraw
-  //}catch(error){
-  //  alert("不正なアドレスです");
-  //}
+  }catch(error){
+    alert("不正なアドレスです");
+  }
 }
 
 function set_solvemode(){
@@ -483,12 +488,13 @@ function set_solvemode(){
   document.getElementById("newsize").style.display = "inline";
   document.getElementById("pu_a").checked = true;
   document.getElementById("pu_q_label").style.display = "none";
-  document.getElementById("savetext").style.display = "none";
+  //document.getElementById("savetext").style.display = "none";
   document.getElementById("newboard").style.display = "none";
   document.getElementById("rotation").style.display = "none";
-  document.getElementById("cage_lb").style.display = "none";
-  document.getElementById("special_lb").style.display = "none";
-  document.getElementById("board_lb").style.display = "none";
+  document.getElementById("mo_cage_lb").style.display = "none";
+  //document.getElementById("mo_move_lb").style.display = "none";
+  document.getElementById("mo_special_lb").style.display = "none";
+  document.getElementById("mo_board_lb").style.display = "none";
   document.getElementById("sub_lineE5_lb").style.display = "none";
   document.getElementById("tb_delete").value = "解答消去"
 }

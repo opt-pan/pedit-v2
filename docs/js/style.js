@@ -107,16 +107,16 @@ function set_line_style(ctx,type){
         ctx.lineWidth = 1;
         break;
       case 11: //grid dash
-        var b = pu.size*0.08;
-        var w = pu.size*0.12;
+        var b = pu.size*0.06;
+        var w = pu.size*0.14;
         ctx.setLineDash([b,w]);
         ctx.lineDashOffset = b*0.5;
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 1;
         break;
       case 12: //dash line
-        var b = pu.size*0.08;
-        var w = pu.size*0.12;
+        var b = pu.size*0.06;
+        var w = pu.size*0.14;
         ctx.setLineDash([b,w]);
         ctx.lineDashOffset = b*0.5;
         ctx.strokeStyle = "#333";
@@ -221,7 +221,7 @@ function set_font_style(ctx,size,type){
       ctx.strokeStyle = "rgba(255,255,255,0)";
       break;
     case 2:
-      ctx.fillStyle = "#009826";
+      ctx.fillStyle = "rgba(36,160,36,1)";
       ctx.strokeStyle = "rgba(255,255,255,0)";
       break;
     case 3:

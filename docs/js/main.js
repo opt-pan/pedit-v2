@@ -275,21 +275,50 @@ function window_click(e) {
     //panel_menu
     case "panel_1_lbmenu":
       panel_pu.mode_set('number');
+      panel_pu.select_close();
       e.preventDefault(); break;
     case "panel_A_lbmenu":
       panel_pu.mode_set('alphabet');
+      panel_pu.select_close();
+      e.preventDefault(); break;
+    case "panel_a_lbmenu":
+      panel_pu.mode_set('alphabet_s');
+      panel_pu.select_close();
       e.preventDefault(); break;
     case "panel_!_lbmenu":
       panel_pu.mode_set('key_symbol');
+      panel_pu.select_close();
       e.preventDefault(); break;
     case "panel_ja_K_lbmenu":
       panel_pu.mode_set('ja_K');
+      panel_pu.select_close();
       e.preventDefault(); break;
     case "panel_ja_H_lbmenu":
       panel_pu.mode_set('ja_H');
+      panel_pu.select_close();
       e.preventDefault(); break;
     case "panel_Kan_lbmenu":
       panel_pu.mode_set('Kan');
+      panel_pu.select_close();
+      e.preventDefault(); break;
+    case "panel_Rome_lbmenu":
+      panel_pu.mode_set('Rome');
+      panel_pu.select_close();
+      e.preventDefault(); break;
+    case "panel_Greek_lbmenu":
+      panel_pu.mode_set('Greek');
+      panel_pu.select_close();
+      e.preventDefault(); break;
+    case "panel_europe_lbmenu":
+      panel_pu.mode_set('europe');
+      panel_pu.select_close();
+      e.preventDefault(); break;
+    case "panel_Cyrillic_lbmenu":
+      panel_pu.mode_set('Cyrillic');
+      panel_pu.select_close();
+      e.preventDefault(); break;
+    case "panel_select_lbmenu":
+      panel_pu.select_open();
       e.preventDefault(); break;
     case "float-canvas":
       f_mdown(e);
@@ -418,33 +447,11 @@ function window_click(e) {
     case "pu_a_label":
       pu.mode_qa("pu_a");
       e.preventDefault(); break;
-    case "surface_lb":
-      pu.mode_set("surface");
-      e.preventDefault(); break;
-    case "line_lb":
-      pu.mode_set("line");
-      e.preventDefault(); break;
-    case "lineE_lb":
-      pu.mode_set("lineE");
-      e.preventDefault(); break;
-    case "wall_lb":
-      pu.mode_set("wall");
-      e.preventDefault(); break;
-    case "cage_lb":
-      pu.mode_set("cage");
-      e.preventDefault(); break;
-    case "number_lb":
-      pu.mode_set("number");
-      e.preventDefault(); break;
-    case "symbol_lb":
-      pu.mode_set("symbol");
-      e.preventDefault(); break;
-    case "special_lb":
-      pu.mode_set("special");
-      e.preventDefault(); break;
-    case "board_lb":
-      pu.mode_set("board");
-      e.preventDefault(); break;
+  }
+  //メインモード
+  if(e.target.id.slice(0,3)==="mo_"){
+    pu.mode_set(e.target.id.slice(3,-3));
+    e.preventDefault();
   }
   //サブモード
   if(e.target.id.slice(0,4)==="sub_"){
@@ -563,7 +570,7 @@ function window_click(e) {
         }else if (n===11){
           pu.key_space();
         }
-      }else if(panel_pu.panelmode === "alphabet"){
+      }else if(panel_pu.panelmode === "alphabet" || panel_pu.panelmode === "alphabet_s"){
         if (0<=n&&n<=27){
           pu.key_number(panel_pu.cont[n].toString());
         }else if (n===28){
@@ -590,6 +597,30 @@ function window_click(e) {
           pu.key_space();
         }
       }else if(panel_pu.panelmode === "Kan"){
+        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
+          pu.key_number(panel_pu.cont[n]);
+        }else if (panel_pu.cont[n]==="　"){
+          pu.key_space();
+        }
+      }else if(panel_pu.panelmode === "Rome"){
+        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
+          pu.key_number(panel_pu.cont[n]);
+        }else if (panel_pu.cont[n]==="　"){
+          pu.key_space();
+        }
+      }else if(panel_pu.panelmode === "Greek"){
+        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
+          pu.key_number(panel_pu.cont[n]);
+        }else if (panel_pu.cont[n]==="　"){
+          pu.key_space();
+        }
+      }else if(panel_pu.panelmode === "Cyrillic"){
+        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
+          pu.key_number(panel_pu.cont[n]);
+        }else if (panel_pu.cont[n]==="　"){
+          pu.key_space();
+        }
+      }else if(panel_pu.panelmode === "europe"){
         if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
           pu.key_number(panel_pu.cont[n]);
         }else if (panel_pu.cont[n]==="　"){

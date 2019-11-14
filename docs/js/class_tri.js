@@ -204,11 +204,13 @@ class Puzzle_tri extends Puzzle{
         type = [0];
         break;
       case "symbol":
+      case "move":
         if(document.getElementById('edge_button').textContent === "OFF"){
           type = [0];
         }else{
           type = [0,1,2,3,4];
         }
+        break;
       case "number":
         if (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "3"){
           type = [];
@@ -1739,6 +1741,26 @@ class Puzzle_tri extends Puzzle{
         ctx.lineTo(x-r2*Math.cos(210*(Math.PI/180))*pu.size,y-(r2*Math.sin(210*(Math.PI/180))-0.1)*pu.size);
         ctx.fill();
         ctx.stroke();
+        break;
+      case 3: //anglers
+        ctx.setLineDash([]);
+        ctx.lineCap = "butt";
+        ctx.strokeStyle = "#000";
+        ctx.fillStyle = "rgba(0,0,0,0)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x-0.35*pu.size,y);
+        ctx.quadraticCurveTo(x-0.*pu.size,y+0.37*pu.size,x+0.3*pu.size,y-0.2*pu.size);
+        ctx.stroke();
+        ctx.moveTo(x-0.35*pu.size,y);
+        ctx.quadraticCurveTo(x-0.*pu.size,y-0.37*pu.size,x+0.3*pu.size,y+0.2*pu.size);
+        ctx.stroke();
+        break;
+      case 4:
+        set_font_style(ctx,0.8*pu.size.toString(10),1);
+        ctx.text("～",x,y-0.11*pu.size);
+        ctx.text("～",x,y+0.09*pu.size);
+        ctx.text("～",x,y+0.29*pu.size);
         break;
     }
   }

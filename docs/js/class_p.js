@@ -51,17 +51,19 @@ class Puzzle{
     this.canvas = document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
     this.obj = document.getElementById("dvique");
-    this.group1 = ["cage_lb","sub_line2_lb","sub_lineE2_lb","sub_number9_lb","ms_tri","ms_pencils","ms_arrow_fourtip"];
-    this.group2 = ["wall_lb","sub_number2_lb","sub_number3_lb","sub_number6_lb","ms4","ms5"];
+    this.group1 = ["mo_cage_lb","sub_line2_lb","sub_lineE2_lb","sub_number9_lb","ms_tri","ms_pencils","ms_arrow_fourtip"];
+    this.group2 = ["mo_wall_lb","sub_number2_lb","sub_number3_lb","sub_number6_lb","ms4","ms5"];
 
     //描画位置
     this.last = -1;
+    this.start_point = {}; //for move_redo
     this.drawing_surface = -1;
     this.drawing_line = -1;
     this.drawing_wall = -1;
     this.drawing_num = -1;
     this.drawing_sym = -1;
     this.drawing_board = -1;
+    this.drawing_move = -1;
     this.cursol = 0;
     this.cursolS = 0;
     //描画モード
@@ -78,7 +80,9 @@ class Puzzle{
               "number":["1",1],
               "symbol":["circle_L",2],
               "special":["thermo",""],
-              "board":["",""]},
+              "board":["",""],
+              "move":["1",""]
+            },
       "pu_a":{"edit_mode":"surface",
               "surface":["",1],
               "line":["1",3],
@@ -88,7 +92,8 @@ class Puzzle{
               "number":["1",2],
               "symbol":["circle_L",2],
               "special":["thermo",""],
-              "board":["",""]}
+              "board":["",""],
+              "move":["1",""]}
             };
     this.theta = 0;
     this.reflect = [1,1];
@@ -411,8 +416,8 @@ class Puzzle{
       this.canvasy = yd-yu;
       this.point_move(-xl,-yu,0);
       this.canvas_size_setting();
-      this.redraw();
     }
+    this.redraw();
 
     var width = this.canvas.width/1.5;
     resizedCanvas.width = width.toString();
@@ -427,8 +432,8 @@ class Puzzle{
       this.canvasy = cy;
       this.point_move(xl,yu,0);
       this.canvas_size_setting();
-      this.redraw();
     }
+    this.redraw();
     return canvastext;
   }
 
@@ -488,7 +493,7 @@ class Puzzle{
     if(document.getElementById('style_'+mode)){
       document.getElementById('style_'+mode).style.display='inline-block';
     }
-    document.getElementById(mode).checked = true;
+    document.getElementById('mo_'+mode).checked = true;
     this.submode_check('sub_'+mode+this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]);
     this.stylemode_check('st_'+mode+this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]);
     if(this.mode[this.mode.qa].edit_mode==="symbol"){
@@ -502,7 +507,7 @@ class Puzzle{
       document.getElementById(name).checked = true;
       this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]=document.getElementById(name).value;
       this.cursolcheck();
-      this.redraw();//カーソル更新
+      this.redraw();//盤面カーソル更新
     }
     this.type = this.type_set();//選択する座標タイプ
   }
@@ -550,6 +555,7 @@ class Puzzle{
     document.getElementById('mode_number').style.display='none';
     document.getElementById('mode_symbol').style.display='none';
     document.getElementById('mode_special').style.display='none';
+    document.getElementById('mode_move').style.display='none';
 
     document.getElementById('style_surface').style.display='none';
     document.getElementById('style_line').style.display='none';
@@ -683,14 +689,22 @@ class Puzzle{
 
 
   undo(){
-    var a = this[this.mode.qa].command_undo.pop();/*a[0]:list_name,a[1]:number,a[2]:value*/
+    var a = this[this.mode.qa].command_undo.pop();/*a[0]:list_name,a[1]:point_number,a[2]:value*/
     if(a){
       if((a[0]==="thermo"||a[0]==="arrows"||a[0]==="direction"||a[0]==="squareframe") && a[1] === -1){
         if(this[this.mode.qa][a[0]].length > 0){
           this[this.mode.qa].command_redo.push([a[0],a[1],this[this.mode.qa][a[0]].pop()]);
         }
+      }else if(a[0]==="move"){//a[0]:move a[1]:point_from a[2]:point_to
+        for (var i in a[1]){
+          if(a[1][i]!=a[2]){
+            this[this.mode.qa][i][a[1][i]] = this[this.mode.qa][i][a[2]];
+            delete this[this.mode.qa][i][a[2]];
+          }
+        }
+        this[this.mode.qa].command_redo.push([a[0],a[1],a[2]]);
       }else{
-        if(this[this.mode.qa][a[0]][a[1]]){//symbol nado
+        if(this[this.mode.qa][a[0]][a[1]]){//symbol etc
           this[this.mode.qa].command_redo.push([a[0],a[1],this[this.mode.qa][a[0]][a[1]]]);
         }else{
           this[this.mode.qa].command_redo.push([a[0],a[1],null]);
@@ -711,6 +725,14 @@ class Puzzle{
       if((a[0]==="thermo"||a[0]==="arrows"||a[0]==="direction"||a[0]==="squareframe") && a[1] === -1){
           this[this.mode.qa].command_undo.push([a[0],a[1],null]);
           this[this.mode.qa][a[0]].push(a[2]);
+      }else if(a[0]==="move"){//a[0]:move a[1]:point_from a[2]:point_to
+        for (var i in a[1]){
+          if(a[1][i]!=a[2]){
+            this[this.mode.qa][i][a[2]] = this[this.mode.qa][i][a[1][i]];
+            delete this[this.mode.qa][i][a[1][i]];
+          }
+        }
+        this[this.mode.qa].command_undo.push([a[0],a[1],a[2]]);
       }else{
         if(this[this.mode.qa][a[0]][a[1]]){
           this[this.mode.qa].command_undo.push([a[0],a[1],JSON.stringify(this[this.mode.qa][a[0]][a[1]])]);
@@ -730,6 +752,8 @@ class Puzzle{
   record(arr,num){
     if((arr === "thermo"||arr === "arrows"||arr==="direction"||arr==="squareframe") && num===-1){
       this[this.mode.qa].command_undo.push([arr,num,null]);
+    }else if(arr === "move"){
+      this[this.mode.qa].command_undo.push([arr,num[0],num[1]]);//num[0]:start_point num[1]:to_point
     }else{
       if (this[this.mode.qa][arr][num]){
         this[this.mode.qa].command_undo.push([arr,num,JSON.stringify(this[this.mode.qa][arr][num])]);   //配列もまとめてJSONで記録
@@ -1053,6 +1077,10 @@ class Puzzle{
         this.drawing_board = 1;
         this.re_board(num);
         break;
+      case "move":
+        this.re_movedown(num);
+        this.redraw();
+        break;
     }
   }
 
@@ -1130,6 +1158,14 @@ class Puzzle{
         this.drawing_board = -1;
         this.last = -1;
         break;
+      case "move":
+        if(this.last != -1){
+          this.re_moveup(num);
+          this.drawing_move = -1;
+          this.start_point = {};
+          this.last = -1;
+          break;
+        }
     }
   }
 
@@ -1179,6 +1215,12 @@ class Puzzle{
           this.re_boardmove(num);
           this.last = num;
           break;
+        case "move":
+          if(this.drawing_move === 1){
+            this.re_movemove(num);
+          }
+          this.redraw();
+          break;
         }
     }
   }
@@ -1208,6 +1250,14 @@ class Puzzle{
           break;
         case "board":
           this.drawing_board = -1;
+          break;
+        case "move":
+          if(this.drawing_move != -1){
+            this.record("move",[this.start_point,this.last]);
+            this.drawing_move = -1;
+            this.start_point = {};
+            this.last = -1;
+          }
           break;
       }
   }
@@ -1305,6 +1355,68 @@ class Puzzle{
       this.drawing_board = 0;
     }
     this.make_frameline();
+    this.redraw();
+  }
+
+  re_movedown(num){
+    var array_list = {};
+    if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]==="1"){
+      array_list = ["number","symbol"];
+    }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]==="2"){
+      array_list = ["number"];
+    }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]==="3"){
+      array_list = ["symbol"];
+    }
+
+    for (var array of array_list){
+      if(this[this.mode.qa][array][num]){
+        this.drawing_move = 1;
+        this.start_point[array] = num;
+        this.last = num;
+        this.cursol = num;
+      }
+    }
+  }
+
+  re_movemove(num){
+    var array_list;
+    var array_list_record = [];
+    var flag = 1;
+
+    this.cursol = num;
+
+    if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]==="1"){
+      array_list = ["number","symbol"];
+    }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]==="2"){
+      array_list = ["number"];
+    }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]==="3"){
+      array_list = ["symbol"];
+    }
+    for (var array in this.start_point){
+      if(this[this.mode.qa][array][num]){
+        flag = 0;
+      }
+    }
+    if (flag === 1){
+      for (var array of array_list){
+        if(!this.start_point[array] && this[this.mode.qa][array][this.cursol]){
+          this.start_point[array] = this.cursol;
+        }
+      }
+      for (var array in this.start_point){
+        if(this[this.mode.qa][array][this.last]){
+          this[this.mode.qa][array][this.cursol]=this[this.mode.qa][array][this.last];
+          delete this[this.mode.qa][array][this.last];
+        }
+      }
+      this.last = this.cursol;
+    }
+    //console.log(this[this.mode.qa]["symbol"]);
+    this.redraw();
+  }
+
+  re_moveup(num){
+    this.record("move",[this.start_point,num]);
     this.redraw();
   }
 
@@ -1547,7 +1659,6 @@ class Puzzle{
       }
       this.ctx.fillStyle = "rgba(0,0,0,0)";
       if (this.mode[this.mode.qa].edit_mode === "number" && (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "3"||this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "9")){
-        console.log(this.cursolS);
         this.draw_polygon(this.ctx,this.point[this.cursolS].x,this.point[this.cursolS].y,0.2,4,45);
       }else if(document.getElementById('edge_button').textContent === "ON"){
         this.draw_polygon(this.ctx,this.point[this.cursol].x,this.point[this.cursol].y,0.2,4,45);
@@ -1561,6 +1672,38 @@ class Puzzle{
         this.ctx.stroke();
         this.ctx.fill();
       }
-    }
+    }/*else if(this.mode[this.mode.qa].edit_mode === "move"){//移動モードのカーソル
+      set_line_style(this.ctx,99);
+      this.ctx.strokeStyle = "#999999";
+      this.ctx.fillStyle = "rgba(0,0,0,0)";
+      if(document.getElementById('edge_button').textContent === "ON"){
+        this.draw_polygon(this.ctx,this.point[this.cursol].x,this.point[this.cursol].y,0.2,4,45);
+      }else{
+        this.ctx.beginPath();
+        this.ctx.moveTo(this.point[this.point[this.cursol].surround[0]].x,this.point[this.point[this.cursol].surround[0]].y);
+        for(var j=1;j<this.point[this.cursol].surround.length;j++){
+          this.ctx.lineTo(this.point[this.point[this.cursol].surround[j]].x,this.point[this.point[this.cursol].surround[j]].y);
+        }
+        this.ctx.closePath();
+        this.ctx.stroke();
+        this.ctx.fill();
+      }
+      if(this.last != -1){
+        set_line_style(this.ctx,99);
+        this.ctx.fillStyle = "rgba(0,0,0,0)";
+        if(document.getElementById('edge_button').textContent === "ON"){
+          this.draw_polygon(this.ctx,this.point[this.last].x,this.point[this.last].y,0.2,4,45);
+        }else{
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.point[this.point[this.last].surround[0]].x,this.point[this.point[this.last].surround[0]].y);
+          for(var j=1;j<this.point[this.last].surround.length;j++){
+            this.ctx.lineTo(this.point[this.point[this.last].surround[j]].x,this.point[this.point[this.last].surround[j]].y);
+          }
+          this.ctx.closePath();
+          this.ctx.stroke();
+          this.ctx.fill();
+        }
+      }
+    }*/
   }
 }

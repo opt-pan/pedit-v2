@@ -22,6 +22,15 @@ class Panel{
     this.draw_panel();
   }
 
+  select_open(){
+    document.getElementById("float-key-select").style.display = "inline";
+    document.getElementById("float-key-select").style.left = this.fkh.style.width;
+  }
+
+  select_close(){
+    document.getElementById("float-key-select").style.display = "none";
+  }
+
   canvas_size_setting(height){
     this.canvasf.width=((this.sizef+this.spacef)*this.nxf-this.spacef)*pu.resol;
     this.canvasf.height=((this.sizef+this.spacef)*this.nyf-this.spacef)*pu.resol;
@@ -46,6 +55,7 @@ class Panel{
   }
 
   draw_panel() {
+    this.select_close();
     if(pu.mode[pu.mode.qa].edit_mode === "number"){
       switch(this.panelmode){
         case "number":
@@ -69,6 +79,18 @@ class Panel{
           this.fkm.style.display = "flex";
           this.cont = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O",
           "P","Q","R","S","T","U","V","W","X","Y","Z","!","?","\u{2423}",""];
+          this.draw_number();
+          break;
+        case "alphabet_s":
+          this.nxf = 6;
+          this.nyf = 5;
+          this.sizef = 36;
+          this.canvas_size_setting(45);
+          this.fkb.style.paddingTop = "0px";
+          this.fkb.style.display = "block";
+          this.fkm.style.display = "flex";
+          this.cont = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o",
+          "p","q","r","s","t","u","v","w","x","y","z","!","?","\u{2423}",""];
           this.draw_number();
           break;
         case "key_symbol":
@@ -119,6 +141,54 @@ class Panel{
           this.fkm.style.display = "flex";
           this.str = "黒白灰緑赤青黄水数独偶奇大中小上下左右　同違長短縦横行列遠近高低以央最各交差方向"+
           "一二三四五六七八九十壁領域部屋点線輪　　書含入出通切曲直進　丸角形例題解答正誤図計算言葉文字盤面矢印"
+          this.cont = this.str.split("");
+          this.draw_number();
+          break;
+        case "Rome":
+          this.nxf = 6;
+          this.nyf = 4;
+          this.sizef = 36;
+          this.canvas_size_setting(45);
+          this.fkb.style.paddingTop = "0px";
+          this.fkb.style.display = "block";
+          this.fkm.style.display = "flex";
+          this.str = "ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫⅰⅱⅲⅳⅴⅵⅶⅷⅸⅹⅺⅻ";
+          this.cont = this.str.split("");
+          this.draw_number();
+          break;
+        case "Greek":
+          this.nxf = 8;
+          this.nyf = 6;
+          this.sizef = 28;
+          this.canvas_size_setting(45);
+          this.fkb.style.paddingTop = "0px";
+          this.fkb.style.display = "block";
+          this.fkm.style.display = "flex";
+          this.str = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩαβγδεζηθικλμνξοπρστυϕχψω";
+          this.cont = this.str.split("");
+          this.draw_number();
+          break;
+        case "Cyrillic":
+          this.nxf = 7;
+          this.nyf = 5;
+          this.sizef = 28;
+          this.canvas_size_setting(45);
+          this.fkb.style.paddingTop = "0px";
+          this.fkb.style.display = "block";
+          this.fkm.style.display = "flex";
+          this.str = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ   ";
+          this.cont = this.str.split("");
+          this.draw_number();
+          break;
+        case "europe":
+          this.nxf = 7;
+          this.nyf = 6;
+          this.sizef = 28;
+          this.canvas_size_setting(45);
+          this.fkb.style.paddingTop = "0px";
+          this.fkb.style.display = "block";
+          this.fkm.style.display = "flex";
+          this.str = "ÄÖÜäöüßÑñÉÀÈÙÂÊÎÔÛËÏÜÇŒÆéàèùâêîôûëïüçœæ   ";
           this.cont = this.str.split("");
           this.draw_number();
           break;
