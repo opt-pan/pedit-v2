@@ -140,6 +140,7 @@ class Puzzle{
       this[i].number = {};
       this[i].numberS = {};
       this[i].symbol = {};
+      this[i].symbol2 = {};
       this[i].freeline = {};
       this[i].freelineE = {};
       this[i].thermo = [];
@@ -166,6 +167,7 @@ class Puzzle{
     this[this.mode.qa].number = {};
     this[this.mode.qa].numberS = {};
     this[this.mode.qa].symbol = {};
+    this[this.mode.qa].symbol2 = {};
     this[this.mode.qa].freeline = {};
     this[this.mode.qa].freelineE = {};
     this[this.mode.qa].thermo = [];
@@ -222,6 +224,7 @@ class Puzzle{
         break;
       case "symbol":
         this[this.mode.qa].symbol = {};
+        this[this.mode.qa].symbol2 = {};
         break;
       case "cage":
         this[this.mode.qa].cage = {};
@@ -419,7 +422,14 @@ class Puzzle{
     }
     this.redraw();
 
-    var width = this.canvas.width/1.5;
+    var qual;
+    if (document.getElementById("nb_quality1").checked){
+      qual = 1;
+    }else{
+      qual = 1.5;
+    }
+
+    var width = this.canvas.width/qual;
     resizedCanvas.width = width.toString();
     resizedCanvas.height = (width*this.canvas.height/this.canvas.width).toString();
 
@@ -495,7 +505,12 @@ class Puzzle{
     }
     document.getElementById('mo_'+mode).checked = true;
     this.submode_check('sub_'+mode+this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0]);
-    this.stylemode_check('st_'+mode+this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]);
+    if(mode === "symbol"){
+      this.stylemode_check('st_'+mode+this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]%10);
+      this.stylemode_check('st_'+mode+parseInt(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]/10)*10);
+    }else{
+      this.stylemode_check('st_'+mode+this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]);
+    }
     if(this.mode[this.mode.qa].edit_mode==="symbol"){
       this.subsymbolmode(this.mode[this.mode.qa].symbol[0]);
     }
@@ -519,7 +534,14 @@ class Puzzle{
   stylemode_check(name){
     if(document.getElementById(name)){
       document.getElementById(name).checked = true;
-      this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]=parseInt(document.getElementById(name).value);
+      console.log(name);
+      if(name === "st_symbol0"){
+        this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]=this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]%10;
+      }else if(name === "st_symbol10"){
+        this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]=this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]%10+10;
+      }else{
+        this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]=parseInt(document.getElementById(name).value);
+      }
       panel_pu.draw_panel();//パネル更新
     }
   }
@@ -609,6 +631,7 @@ class Puzzle{
         break;
       case "symbol":
         this[this.mode.qa].symbol = {};
+        this[this.mode.qa].symbol2 = {};
         break;
       case "cage":
         this[this.mode.qa].cage = {};
