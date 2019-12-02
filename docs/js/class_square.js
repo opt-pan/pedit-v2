@@ -1400,6 +1400,7 @@ class Puzzle_square extends Puzzle{
         break;
       case "battleship_G":
         set_circle_style(ctx,3);
+        ctx.fillStyle = "#999";
         this.draw_battleship(ctx,num,x,y);
         break;
       case "battleship_W":
@@ -1566,6 +1567,7 @@ class Puzzle_square extends Puzzle{
           break;
         case 6:
           set_circle_style(ctx,3);
+          ctx.fillStyle = "#999";
           ctx.beginPath();
           ctx.moveTo(x-r*pu.size,y-r*pu.size);
           ctx.lineTo(x+r*pu.size,y-r*pu.size);
@@ -1575,6 +1577,7 @@ class Puzzle_square extends Puzzle{
           break;
         case 7:
           set_circle_style(ctx,3);
+          ctx.fillStyle = "#999";
           ctx.beginPath();
           ctx.moveTo(x+r*pu.size,y+r*pu.size);
           ctx.lineTo(x-r*pu.size,y+r*pu.size);
@@ -1584,6 +1587,7 @@ class Puzzle_square extends Puzzle{
           break;
         case 8:
           set_circle_style(ctx,3);
+          ctx.fillStyle = "#999";
           ctx.beginPath();
           ctx.moveTo(x+r*pu.size,y+r*pu.size);
           ctx.lineTo(x-r*pu.size,y+r*pu.size);
@@ -1593,6 +1597,7 @@ class Puzzle_square extends Puzzle{
           break;
         case 9:
           set_circle_style(ctx,3);
+          ctx.fillStyle = "#999";
           ctx.beginPath();
           ctx.moveTo(x-r*pu.size,y-r*pu.size);
           ctx.lineTo(x+r*pu.size,y-r*pu.size);
@@ -1602,6 +1607,7 @@ class Puzzle_square extends Puzzle{
           break;
         case 0:
           set_circle_style(ctx,3);
+          ctx.fillStyle = "#999";
           this.draw_polygon(ctx,x,y,r*Math.sqrt(2),4,45);
           break;
       }

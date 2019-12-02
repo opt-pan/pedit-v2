@@ -140,7 +140,7 @@ class Puzzle{
       this[i].number = {};
       this[i].numberS = {};
       this[i].symbol = {};
-      this[i].symbol2 = {};
+      //this[i].symbol2 = {};
       this[i].freeline = {};
       this[i].freelineE = {};
       this[i].thermo = [];
@@ -167,7 +167,7 @@ class Puzzle{
     this[this.mode.qa].number = {};
     this[this.mode.qa].numberS = {};
     this[this.mode.qa].symbol = {};
-    this[this.mode.qa].symbol2 = {};
+    //this[this.mode.qa].symbol2 = {};
     this[this.mode.qa].freeline = {};
     this[this.mode.qa].freelineE = {};
     this[this.mode.qa].thermo = [];
@@ -224,7 +224,7 @@ class Puzzle{
         break;
       case "symbol":
         this[this.mode.qa].symbol = {};
-        this[this.mode.qa].symbol2 = {};
+        //this[this.mode.qa].symbol2 = {};
         break;
       case "cage":
         this[this.mode.qa].cage = {};
@@ -534,7 +534,6 @@ class Puzzle{
   stylemode_check(name){
     if(document.getElementById(name)){
       document.getElementById(name).checked = true;
-      console.log(name);
       if(name === "st_symbol0"){
         this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]=this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1]%10;
       }else if(name === "st_symbol10"){
@@ -631,7 +630,7 @@ class Puzzle{
         break;
       case "symbol":
         this[this.mode.qa].symbol = {};
-        this[this.mode.qa].symbol2 = {};
+        //this[this.mode.qa].symbol2 = {};
         break;
       case "cage":
         this[this.mode.qa].cage = {};
@@ -708,6 +707,370 @@ class Puzzle{
       var url = location.href.split('?')[0];
       //console.log("save",text.length,"=>",compressed.length,"=>",ba.length);
       return url+"?m=solve&p="+ba;
+    }
+
+    maketext_ppfile() {
+      var text = "";
+      var gridsize = "19.842";
+
+      //解答線
+      if(!isEmpty(this.pu_a.line)){
+        text += '#解答線:2,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:9.921,9.921\n'+
+        '*Stroke:80,3,0,1,1\n';
+        var i1,i2,x1,x2,y1,y2;
+        for(var i in this.pu_a.line){
+          i1 = Number(i.split(",")[0]);
+          i2 = Number(i.split(",")[1]);
+          y1 = (i1%this.nx0)-2;
+          y2 = (i2%this.nx0)-2;
+          x1 = parseInt(i1/this.nx0)-2;
+          x2 = parseInt(i2/this.nx0)-2;
+          text += x1 + ',' + y1 + ';' + x2 + ',' + y2 + '\n';
+        }
+        text += "--------\n";
+      }
+
+      //問題辺
+      if(!isEmpty(this.pu_q.lineE)){
+        text += '#問題辺:2,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Stroke:100,2,0,1,1\n';
+        var i1,i2,x1,x2,y1,y2;
+        for(var i in this.pu_q.lineE){
+          i1 = Number(i.split(",")[0])-this.nx0*this.ny0;
+          i2 = Number(i.split(",")[1])-this.nx0*this.ny0;
+          y1 = (i1%this.nx0)-1;
+          y2 = (i2%this.nx0)-1;
+          x1 = parseInt(i1/this.nx0)-1;
+          x2 = parseInt(i2/this.nx0)-1;
+          text += x1 + ',' + y1 + ';' + x2 + ',' + y2 + '\n';
+        }
+        text += "--------\n";
+      }
+
+      //解答辺
+      if(!isEmpty(this.pu_a.lineE)){
+        text += '#解答辺:2,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Stroke:100,2,0,1,1\n';
+        var i1,i2,x1,x2,y1,y2;
+        for(var i in this.pu_a.lineE){
+          i1 = Number(i.split(",")[0])-this.nx0*this.ny0;
+          i2 = Number(i.split(",")[1])-this.nx0*this.ny0;
+          y1 = (i1%this.nx0)-1;
+          y2 = (i2%this.nx0)-1;
+          x1 = parseInt(i1/this.nx0)-1;
+          x2 = parseInt(i2/this.nx0)-1;
+          text += x1 + ',' + y1 + ';' + x2 + ',' + y2 + '\n';
+        }
+        text += "--------\n";
+      }
+
+      //盤面枠
+      text += '#盤面枠:0,True\n'+
+      '*Grid:'+gridsize+','+gridsize+'\n'+
+      '*Skew:0,0\n'+
+      '*Offset:0,0\n'+
+      '*Size:'+gridsize+','+gridsize+'\n'+
+      '*Alignment:0,0\n'+
+      '*Fill:-1\n';
+      if (this.mode.grid[0]==="1"){
+        text += '*Stroke:100,0.4,0,1\n'; //実線
+      }else if (this.mode.grid[0]==="2"){
+        text += '*Stroke:100,0.4,1.804/3.1565/0.902,1\n';　//点線
+      }else if(this.mode.grid[0]==="3"){
+        text += '*Stroke:-1,0,0,1\n';　//なし
+      }
+      if (this.mode.grid[2]==="1"){
+        text += '*Border:100,2,0,1\n'; //実線
+      }else if (this.mode.grid[2]==="2"){
+        text += '*Border:-1,0,0,1\n'; //枠なし
+      }
+
+      text += "%%盤面マス%%\n";
+      text += "--------\n";
+
+      //解答数字
+      if(!isEmpty(this.pu_a.number)){
+        text += '#解答数字:3,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize+','+gridsize+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:100\n'+
+        '*Stroke:-1,0,0,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_a.number[i+j*(this.nx0)]&&this.pu_a.number[i+j*(this.nx0)][2]==="1"&&!isNaN(this.pu_a.number[i+j*(this.nx0)][0])){
+              text += this.pu_a.number[i+j*(this.nx0)][0]+" ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //解答文字
+      if(!isEmpty(this.pu_a.number)){
+        text += '#解答文字:7,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize+','+gridsize+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:100\n'+
+        '*Stroke:-1,0,0,1\n'+
+        '*Font:IPAGothic,Normal,Normal,Normal,16\n'+
+        '*TextAlignment:1,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_a.number[i+j*(this.nx0)]&&this.pu_a.number[i+j*(this.nx0)][2]==="1"&&isNaN(this.pu_a.number[i+j*(this.nx0)][0])){
+              text += this.pu_a.number[i+j*(this.nx0)][0]+" ";
+            }else{
+              text += "_ ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //問題数字
+      if(!isEmpty(this.pu_q.number)){
+        text += '#問題数字:3,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize+','+gridsize+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:100\n'+
+        '*Stroke:-1,0,0,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_q.number[i+j*(this.nx0)]&&this.pu_q.number[i+j*(this.nx0)][2]==="1"&&!isNaN(this.pu_q.number[i+j*(this.nx0)][0])){
+              text += this.pu_q.number[i+j*(this.nx0)][0]+" ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //問題1/4数字
+      if(!isEmpty(this.pu_q.numberS)){
+        text += '#問題1/4数字:3,True\n'+
+        '*Grid:'+gridsize/2+','+gridsize/2+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize/2+','+gridsize/2+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:100\n'+
+        '*Stroke:-1,0,0,1\n';
+        var k;
+        for (var j=0; j<2*this.ny0-8; j++){
+          for (var i=0; i<2*this.nx0-8; i++){
+            if(j%2===0&&i%2===0){
+              k=4*this.nx0*this.ny0+4*2*this.nx0+8+2*i+2*j*this.nx0;
+            }else if(j%2===0&&i%2===1){
+              k=4*this.nx0*this.ny0+4*2*this.nx0+8+1+2*(i-1)+2*j*this.nx0;
+            }else if(j%2===1&&i%2===0){
+              k=4*this.nx0*this.ny0+4*2*this.nx0+8+2+2*i+2*(j-1)*this.nx0;
+            }else if(j%2===1&&i%2===1){
+              k=4*this.nx0*this.ny0+4*2*this.nx0+8+3+2*(i-1)+2*(j-1)*this.nx0;
+            }
+            if(this.pu_q.numberS[k]&&!isNaN(this.pu_q.numberS[k][0])){
+              text += this.pu_q.numberS[k][0]+" ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+
+      }
+
+      //問題文字
+      if(!isEmpty(this.pu_q.number)){
+        text += '#問題文字:7,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize+','+gridsize+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:100\n'+
+        '*Stroke:-1,0,0,1\n'+
+        '*Font:IPAGothic,Normal,Normal,Normal,16\n'+
+        '*TextAlignment:1,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_q.number[i+j*(this.nx0)]&&this.pu_q.number[i+j*(this.nx0)][2]==="1"&&isNaN(this.pu_q.number[i+j*(this.nx0)][0])){
+              text += this.pu_q.number[i+j*(this.nx0)][0]+" ";
+            }else{
+              text += "_ ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //問題Tapa数字
+      if(!isEmpty(this.pu_q.number)){
+        text += '#問題Tapa数字:6,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize+','+gridsize+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:100\n'+
+        '*Stroke:-1,0,0,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_q.number[i+j*(this.nx0)]&&this.pu_q.number[i+j*(this.nx0)][2]==="4"&&!isNaN(this.pu_q.number[i+j*(this.nx0)][0])){
+              text += this.pu_q.number[i+j*(this.nx0)][0]+" ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //問題丸
+      if(!isEmpty(this.pu_q.symbol)){
+        text += '#問題丸:4,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+(gridsize-2)+','+(gridsize-2)+'\n'+
+        '*Alignment:1,1\n'+
+        '*Fill:100\n'+
+        '*Stroke:100,0.5,0,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_q.symbol[i+j*(this.nx0)]&&this.pu_q.symbol[i+j*(this.nx0)][0]===1&&this.pu_q.symbol[i+j*(this.nx0)][1]==="circle_M"){
+              text += "0 ";
+            }else if(this.pu_q.symbol[i+j*(this.nx0)]&&this.pu_q.symbol[i+j*(this.nx0)][0]===2&&this.pu_q.symbol[i+j*(this.nx0)][1]==="circle_M"){
+              text += "1 ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //解答丸
+      if(!isEmpty(this.pu_a.symbol)){
+        text += '#解答丸:4,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+(gridsize-2)+','+(gridsize-2)+'\n'+
+        '*Alignment:1,1\n'+
+        '*Fill:100\n'+
+        '*Stroke:100,0.5,0,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_a.symbol[i+j*(this.nx0)]&&this.pu_a.symbol[i+j*(this.nx0)][0]===1&&this.pu_a.symbol[i+j*(this.nx0)][1]==="circle_M"){
+              text += "0 ";
+            }else if(this.pu_a.symbol[i+j*(this.nx0)]&&this.pu_a.symbol[i+j*(this.nx0)][0]===2&&this.pu_a.symbol[i+j*(this.nx0)][1]==="circle_M"){
+              text += "1 ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //解答黒マス
+      if(!isEmpty(this.pu_a.surface)){
+        text += '#解答黒マス:0,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize+','+gridsize+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:80\n'+
+        '*Stroke:100,0.25,0,1\n'+
+        '*Border:-1,0,0,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_a.surface[i+j*(this.nx0)]&&this.pu_a.surface[i+j*(this.nx0)]===1){
+              text += "1 ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //問題黒マス
+      if(!isEmpty(this.pu_q.surface)){
+        text += '#問題黒マス:0,True\n'+
+        '*Grid:'+gridsize+','+gridsize+'\n'+
+        '*Skew:0,0\n'+
+        '*Offset:0,0\n'+
+        '*Size:'+gridsize+','+gridsize+'\n'+
+        '*Alignment:0,0\n'+
+        '*Fill:100\n'+
+        '*Stroke:-1,0,0,1\n'+
+        '*Border:-1,0,0,1\n';
+        for (var j=2; j<this.ny0-2; j++){
+          for (var i=2; i<this.nx0-2; i++){
+            if(this.pu_q.surface[i+j*(this.nx0)]&&(this.pu_q.surface[i+j*(this.nx0)]===1||this.pu_q.surface[i+j*(this.nx0)]===4)){
+              text += "1 ";
+            }else{
+              text += ". ";
+            }
+          }
+          text += "\n";
+        }
+        text += "--------\n";
+      }
+
+      //盤面マス
+      text += '#盤面マス:0,True\n'+
+      '*Grid:'+gridsize+','+gridsize+'\n'+
+      '*Skew:0,0\n'+
+      '*Offset:0,0\n'+
+      '*Size:'+gridsize+','+gridsize+'\n'+
+      '*Alignment:0,0\n'+
+      '*Fill:0\n'+
+      '*Stroke:-1,0,0,1\n'+
+      '*Border:-1,0,0,1\n';
+      for (var j=2; j<this.ny0-2; j++){
+        for (var i=2; i<this.nx0-2; i++){
+          if(this.centerlist.indexOf(i+j*(this.nx0))!=-1){
+            text += "1 ";
+          }else{
+            text += ". ";
+          }
+        }
+        text += "\n";
+      }
+      text += "--------\n";
+
+      return text;
     }
 
 

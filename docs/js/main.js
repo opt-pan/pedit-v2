@@ -333,6 +333,9 @@ function window_click(e) {
     case "address_solve":
       savetext_solve();
       e.preventDefault(); break;
+    case "pp_file":
+      make_ppfile();
+      e.preventDefault(); break;
     case "savetextarea":
       return;
     case "savetextname":

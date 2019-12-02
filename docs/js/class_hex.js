@@ -1106,6 +1106,7 @@ class Puzzle_hex extends Puzzle{
         break;
       case "battleship_G":
         set_circle_style(ctx,3);
+        ctx.fillStyle = "#999";
         this.draw_battleship(ctx,num,x,y);
         break;
       case "battleship_W":

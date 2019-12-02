@@ -62,7 +62,7 @@ function make_class(gridtype){
       if(nx<=25 && nx>0 && ny<=25 && ny>0 && 15<=size && size<=60 && space1+space2<ny && space3+space4<nx){
         pu = new Puzzle_square(nx,ny,size);
       }else{
-        alert("一辺:1~25 サイズ:15~60");
+        alert("一辺:1~25 表示サイズ:15~60");
       }
       break;
     case "hex":
@@ -71,7 +71,7 @@ function make_class(gridtype){
       if(n0<=10 && n0>0 && 15<=size && size<=60 && space1<n0){
         pu = new Puzzle_hex(n0,n0,size);
       }else{
-        alert("一辺:1~10 サイズ:15~60");
+        alert("一辺:1~10 表示サイズ:15~60");
       }
       break;
     case "tri":
@@ -80,7 +80,7 @@ function make_class(gridtype){
       if(n0<=20 && n0>0 && 15<=size && size<=60 && space1<n0/3){
         pu = new Puzzle_tri(n0,n0,size);
       }else{
-        alert("一辺:1~20 サイズ:15~60");
+        alert("一辺:1~20 表示サイズ:15~60");
       }
       break;
     case "pyramid":
@@ -89,7 +89,7 @@ function make_class(gridtype){
       if(n0<=20 && n0>0 && 15<=size && size<=60 && space1<n0/3){
         pu = new Puzzle_pyramid(n0,n0,size);
       }else{
-        alert("一辺:1~20 サイズ:15~60");
+        alert("一辺:1~20 表示サイズ:15~60");
       }
       break;
     case "iso":
@@ -98,7 +98,7 @@ function make_class(gridtype){
       if(n0<=20 && n0>0 && 15<=size && size<=60 && space1<n0/3){
         pu = new Puzzle_iso(n0,n0,size);
       }else{
-        alert("一辺:1~20 サイズ:15~60");
+        alert("一辺:1~20 表示サイズ:15~60");
       }
       break;
   }
@@ -165,7 +165,7 @@ function rotation(){
 }
 
 function CreateCheck() {
-  if( confirm("現在の盤面はリセットされます") ) {
+  if( confirm("現在の盤面がリセットされます\n\n 表示サイズ・グリッド線は「枠変更」で変更可能") ) {
     create_newboard();
     pu.redraw();
   }
@@ -179,7 +179,7 @@ function newgrid(){
     panel_pu.draw_panel();
     document.getElementById('modal').style.display = 'none';
   }else{
-    alert("サイズ:15~60");
+    alert("表示サイズ:15~60");
   }
 }
 
@@ -193,7 +193,7 @@ function newgrid_r(){
     panel_pu.draw_panel();
     document.getElementById('modal-newsize').style.display = 'none';
   }else{
-    alert("サイズ:15~60");
+    alert("表示サイズ:15~60");
   }
 }
 
@@ -274,7 +274,7 @@ function saveimage_download(){
           downloadLink.click();
       }
     }else{
-      alert("ファイル名に使えない文字列が含まれています。")
+      alert("ファイル名に使えない文字列\\/:*?\"<>|が含まれています。")
     }
 }
 
@@ -301,6 +301,12 @@ function savetext_solve() {
   document.getElementById("savetextarea").value = text;
 }
 
+function make_ppfile() {
+  var text = pu.maketext_ppfile();
+  //text = text.split("?")[0]+"?m=solve&"+text.split("?")[1];
+  document.getElementById("savetextarea").value = text;
+}
+
 function savetext_copy() {
   var textarea = document.getElementById("savetextarea");
   textarea.select();
@@ -318,7 +324,7 @@ function savetext_download(){
   var text = document.getElementById("savetextarea").value;
   var downloadLink = document.getElementById('download_link');
   var filename = document.getElementById("savetextname").value;
-  if(filename.slice(-4)!=".txt"){
+  if(filename.indexOf(".")===-1){
     filename += ".txt";
   }
   var blob = new Blob([text],{type: "text/plain"});
@@ -344,7 +350,7 @@ function savetext_download(){
       downloadLink.click();
     }
   }else{
-    alert("ファイル名に使えない文字列が含まれています。");
+    alert("ファイル名に使えない文字列\\/:*?\"<>|が含まれています。");
   }
 }
 
@@ -497,6 +503,10 @@ function set_solvemode(){
   document.getElementById("mo_board_lb").style.display = "none";
   document.getElementById("sub_lineE5_lb").style.display = "none";
   document.getElementById("tb_delete").value = "解答消去"
+}
+
+function isEmpty(obj){
+  return !Object.keys(obj).length;
 }
 
 /*Copyright (c) 2017 Yuzo Matsuzawa*/
