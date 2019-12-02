@@ -380,10 +380,10 @@
             <label for="st_symbol1" class="label" id="st_symbol1_lb">線-奥</label>
             <input type="radio" name="style_symbol" value="2" id="st_symbol2" checked="checked">
             <label for="st_symbol2" class="label" id="st_symbol2_lb">線-前</label>
-            <input type="radio" name="style_symbol2" value="0" id="st_symbol0">
+            <!--<input type="radio" name="style_symbol2" value="0" id="st_symbol0">
             <label for="st_symbol0" class="label" id="st_symbol0_lb">ﾚｲﾔｰ1</label>
             <input type="radio" name="style_symbol2" value="10" id="st_symbol10">
-            <label for="st_symbol10" class="label" id="st_symbol10_lb">ﾚｲﾔｰ2</label>
+            <label for="st_symbol10" class="label" id="st_symbol10_lb">ﾚｲﾔｰ2</label>-->
             <span class="symbolmode_display">
               <span id="panel_button0" class="label">選択中：</span>
               <b><span id="symmode_content" class="symmode_content">circle_L</span></b>
@@ -470,7 +470,8 @@
         </span>
         <br>
         <h4 id="div_all"><label class="label_nb">余白：</label></h4>
-        <span id="modal-spaceud">
+        「マス」モードで設定
+        <span id="modal-spaceud" style="display:none;">
           <span id="div_all"><label class="label_nb" id="name_space1">上：</label></span>
           <input type="number" pattern="\d*" name="nb_space1" id="nb_space1" value="0" min="0" max="10" step="1">
           <span id="div_all"><label class="label_nb" id="name_space2">下：</label></span>
@@ -478,7 +479,7 @@
         </span>
         <br>
         <h4 id="div_all"><label class="label_nb">　　　</label></h4>
-        <span id="modal-spacelr">
+        <span id="modal-spacelr" style="display:none;">
           <span id="div_all"><label class="label_nb" id="name_space3">左：</label></span>
           <input type="number" pattern="\d*" name="nb_space3" id="nb_space3" value="0" min="0" max="10" step="1">
           <span id="div_all"><label class="label_nb" id="name_space4">右：</label></span>
@@ -606,6 +607,7 @@
         <div class="nb_button">
           <input type="button" id="address_edit" value="編集アドレス"/>
           <input type="button" id="address_solve" value="出題用アドレス"/>
+          <input type="button" id="pp_file" value="pp_file"/>
         </div>
         <div id="modal-save-body">
           <textarea readonly rows="10" cols="50" id="savetextarea"></textarea>
