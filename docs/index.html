@@ -44,9 +44,11 @@
           <label for="pu_a" class="label" id="pu_a_label">解答</label>
           <!--<input type="radio" name="mode_qa" id="pu_m" value=3 />
           <label for="pu_m" class="label" id="pu_m_label">移動</label>-->
-          <span id="panel_button0" class="label">　　　</span>
+          <!--<span id="panel_button0" class="label">　　　</span>-->
           <span id="panel_button0" class="label">パネル：</span>
           <span id="panel_button" class="label">OFF</span>
+          <span id="panel_button0" class="label">辺入力：</span>
+          <span id="edge_button" class="label">OFF</span>
         </div>
         <div id="mode_button" class="mode_button">
           <label class="label_mode" id="mode_txt">モード：</label>
@@ -72,8 +74,9 @@
           <label for="mo_special" class="label" id="mo_special_lb">特殊</label>
           <input type="radio" name="mode" id="mo_cage"/>
           <label for="mo_cage" class="label" id="mo_cage_lb">枠</label>
-          <span id="panel_button0" class="label">辺入力：</span>
-          <span id="edge_button" class="label">OFF</span>
+          <input type="radio" name="mode" id="mo_combi"/>
+          <label for="mo_combi" class="label_option" id="mo_combi_lb">複合</label>
+
           <br>
         </div>
         <hr size=1 noshade>
@@ -88,6 +91,8 @@
             <label for="sub_line2" class="label" id="sub_line2_lb">対角線</label>
             <input type="radio" name="mode_line" value="3" id="sub_line3">
             <label for="sub_line3" class="label" id="sub_line3_lb">自由線</label>
+            <input type="radio" name="mode_line" value="5" id="sub_line5">
+            <label for="sub_line5" class="label" id="sub_line5_lb">中線</label>
             <input type="radio" name="mode_line" value="4" id="sub_line4">
             <label for="sub_line4" class="label" id="sub_line4_lb">補助×</label>
           </span>
@@ -269,6 +274,11 @@
             <input type="radio" name="mode_move" value="3" id="sub_move3">
             <label for="sub_move3" class="label" id="sub_move3_lb">記号</label>
           </span>
+
+          <span id="mode_combi" style="display:none;">
+            <input type="radio" name="mode_combi" value="battleship" id="sub_combibattleship" checked="checked">
+            <label for="sub_combibattleship" class="label" id="sub_combibattleship_lb">船</label>
+          </span>
         </div>
 
 
@@ -434,7 +444,9 @@
             <li><div id="panel_Rome"><label for="panel_Rome" id="panel_Rome_lbmenu" class="label_menu">Ⅰ</label></div></li><br>
             <li><div id="panel_Greek"><label for="panel_Greek" id="panel_Greek_lbmenu" class="label_menu">α</label></div></li><br>
             <li><div id="panel_europe"><label for="panel_europe" id="panel_europe_lbmenu" class="label_menu">À</label></div></li><br>
-            <li><div id="panel_Cyrillic"><label for="panel_Cyrillic" id="panel_Cyrillic_lbmenu" class="label_menu">Ж</label></div></li>
+            <li><div id="panel_Cyrillic"><label for="panel_Cyrillic" id="panel_Cyrillic_lbmenu" class="label_menu">Ж</label></div></li><br>
+            <li><div id="panel_Chess"><label for="panel_Chess" id="panel_Chess_lbmenu" class="label_menu">♛</label></div></li><br>
+            <li><div id="panel_card"><label for="panel_card" id="panel_card_lbmenu" class="label_menu">♠</label></div></li>
           </ul>
         </div>
         <div id="float-key-board">
