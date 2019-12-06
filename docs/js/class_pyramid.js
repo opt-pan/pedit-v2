@@ -43,6 +43,9 @@ class Puzzle_pyramid extends Puzzle{
     for (var i of this.group2){
       document.getElementById(i).style.display = "inline-block";
     }
+    for (var i of this.group3){
+      document.getElementById(i).style.display = "none";
+    }
   }
 
   create_point(){

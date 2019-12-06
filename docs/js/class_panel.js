@@ -54,9 +54,21 @@ class Panel{
     }
   }
 
+  draw_unicodesymbol(){
+    set_surface_style(this.ctxf,99);
+    for(var i = 0 ; i < this.nxf*this.nyf ; i++){
+        this.ctxf.fillRect((i%this.nxf)*(this.sizef+this.spacef),(i/this.nxf|0)*(this.sizef+this.spacef), this.sizef, this.sizef);
+    }
+    for(var i = 0 ; i < this.nxf*this.nyf ; i++){
+      set_font_style(this.ctxf,0.8*this.sizef.toString(10),pu.mode[pu.mode.qa][pu.mode[pu.mode.qa].edit_mode][1]);
+      if(this.ctxf.fillStyle === "#ffffff"){this.ctxf.fillStyle = "#000000";}
+      this.ctxf.text(this.cont[i],(i%this.nxf+0.45)*(this.sizef+this.spacef),((i/this.nxf|0)+0.55)*(this.sizef+this.spacef));
+    }
+  }
+
   draw_panel() {
     this.select_close();
-    if(pu.mode[pu.mode.qa].edit_mode === "number"){
+    if(pu.mode[pu.mode.qa].edit_mode === "number"&&!pu.paneloff){
       switch(this.panelmode){
         case "number":
           this.nxf = 4;
@@ -114,7 +126,7 @@ class Panel{
           this.fkb.style.display = "block";
           this.fkm.style.display = "flex";
           this.str = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ"+
-          "ヤユヨ　　ラリルレロワヲン　　ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォャュョッ　ー。、　　"
+          "ヤユヨ　　ラリルレロワヲン　　ガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポァィゥェォャュョッ　ー。、「」"
           this.cont = this.str.split("");
           this.draw_number();
           break;
@@ -127,7 +139,7 @@ class Panel{
           this.fkb.style.display = "block";
           this.fkm.style.display = "flex";
           this.str = "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめも"+
-          "やゆよ　　らりるれろわをん　　がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっ　ー。、　　"
+          "やゆよ　　らりるれろわをん　　がぎぐげござじずぜぞだぢづでどばびぶべぼぱぴぷぺぽぁぃぅぇぉゃゅょっ　ー。、「」"
           this.cont = this.str.split("");
           this.draw_number();
           break;
@@ -192,8 +204,32 @@ class Panel{
           this.cont = this.str.split("");
           this.draw_number();
           break;
+        case "Chess":
+          this.nxf = 6;
+          this.nyf = 5;
+          this.sizef = 32;
+          this.canvas_size_setting(45);
+          this.fkb.style.paddingTop = "0px";
+          this.fkb.style.display = "block";
+          this.fkm.style.display = "flex";
+          this.str = "♔♕♖♗♘♙♚♛♜♝♞♟☖☗歩角飛香桂銀金王玉と龍馬杏圭全成";
+          this.cont = this.str.split("");
+          this.draw_unicodesymbol();
+          break;
+        case "card":
+          this.nxf = 4;
+          this.nyf = 6;
+          this.sizef = 32;
+          this.canvas_size_setting(45);
+          this.fkb.style.paddingTop = "0px";
+          this.fkb.style.display = "block";
+          this.fkm.style.display = "flex";
+          this.str = "♤♡♢♧♠♥♦♣A2345678910JQK  ";
+          this.cont = this.str.split("");
+          this.draw_unicodesymbol();
+          break;
       }
-    }else if (pu.mode[pu.mode.qa].edit_mode === "symbol"){
+    }else if (pu.mode[pu.mode.qa].edit_mode === "symbol"&&!pu.paneloff){
       this.nxf = 4;
       this.nyf = 3;
       this.sizef = 36;

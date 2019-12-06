@@ -41,12 +41,15 @@ class Puzzle_tri extends Puzzle{
     for (var i of this.group2){
       document.getElementById(i).style.display = "none";
     }
+    for (var i of this.group3){
+      document.getElementById(i).style.display = "inline-block";
+    }
   }
 
   create_point(){
     var k = 0;
     var n = this.n0;
-    var adjacent,surround,type,use;
+    var adjacent,surround,type,use,neighbor;
     var point = [];
     //center
     type = 1;
@@ -66,7 +69,8 @@ class Puzzle_tri extends Puzzle{
         if(i===0||i===n-1||j===0||j===n-1){use=-1;}else{use=1;}
         adjacent = [k+n**2,k+n**2+1,k+n**2+n+j%2];
         surround = [k-n**2,k-n**2+n-1+j%2,k-n**2+n+j%2];
-        point[k] = new Point(point[i+j*n].x,point[i+j*n].y+2/3*this.size*Math.sqrt(3)*0.5,type,adjacent,surround,use);
+        neighbor = [k+2*n**2,k+3*n**2,k+4*n**2+n-1+j%2];
+        point[k] = new Point(point[i+j*n].x,point[i+j*n].y+2/3*this.size*Math.sqrt(3)*0.5,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -75,7 +79,8 @@ class Puzzle_tri extends Puzzle{
         if(i===0||i===n-1||j===0||j===n-1){use=-1;}else{use=1;}
         adjacent = [k-n**2-n-(j+1)%2,k-n**2-1,k-n**2];
         surround = [k-2*n**2-1,k-2*n**2,k-2*n**2+n-1+j%2];
-        point[k] = new Point(point[i+j*n].x-0.5*this.size,point[i+j*n].y+1/3*this.size*Math.sqrt(3)*0.5,type,adjacent,surround,use);
+        neighbor = [k+n**2,k+2*n**2-1,k+3*n**2-1];
+        point[k] = new Point(point[i+j*n].x-0.5*this.size,point[i+j*n].y+1/3*this.size*Math.sqrt(3)*0.5,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -86,7 +91,8 @@ class Puzzle_tri extends Puzzle{
         if(i===0||i===n-1||j===0||j===n-1){use=-1;}else{use=1;}
         adjacent = [k+n-1+j%2,k-n+j%2];
         surround = [];
-        point[k] = new Point(point[i+j*n].x-0.25*this.size,point[i+j*n].y+this.size*Math.sqrt(3)*0.25,type,adjacent,surround,use);
+        neighbor = [k-2*n**2,k-n**2];
+        point[k] = new Point(point[i+j*n].x-0.25*this.size,point[i+j*n].y+this.size*Math.sqrt(3)*0.25,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -96,7 +102,8 @@ class Puzzle_tri extends Puzzle{
         if(i===0||i===n-1||j===0||j===n-1){use=-1;}else{use=1;}
         adjacent = [k+n+j%2,k-n-1+j%2];
         surround = [];
-        point[k] = new Point(point[i+j*n].x+0.25*this.size,point[i+j*n].y+this.size*Math.sqrt(3)*0.25,type,adjacent,surround,use);
+        neighbor = [k-3*n**2,k-2*n**2+1];
+        point[k] = new Point(point[i+j*n].x+0.25*this.size,point[i+j*n].y+this.size*Math.sqrt(3)*0.25,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -106,7 +113,8 @@ class Puzzle_tri extends Puzzle{
         if(i===0||i===n-1||j===0||j===n-1){use=-1;}else{use=1;}
         adjacent = [k-1,k+1];
         surround = [];
-        point[k] = new Point(point[i+j*n].x+0.5*this.size,point[i+j*n].y,type,adjacent,surround,use);
+        neighbor = [k-4*n**2-n+j%2,k-3*n**2+1];
+        point[k] = new Point(point[i+j*n].x+0.5*this.size,point[i+j*n].y,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -225,6 +233,8 @@ class Puzzle_tri extends Puzzle{
       case "line":
         if (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "4"){
           type = [2,3,4];
+        }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "5"){
+          type = [0,2,3,4];
         }else{
           type = [0];
         }
@@ -382,12 +392,15 @@ class Puzzle_tri extends Puzzle{
         this.ctx.text(i,this.point[i].x,this.point[i].y,0.8*this.size);
       }else if(this.point[i].type===2){
         this.ctx.fillStyle = "red";
+        this.ctx.text(i,this.point[i].x,this.point[i].y,0.8*this.size);
         this.ctx.fillStyle = "rgba(0,0,0,0)";
       }else if(this.point[i].type===3){
         this.ctx.fillStyle = "orange";
+        this.ctx.text(i,this.point[i].x,this.point[i].y,0.8*this.size);
         this.ctx.fillStyle = "rgba(0,0,0,0)";
       }else if(this.point[i].type===4){
         this.ctx.fillStyle = "green";
+        this.ctx.text(i,this.point[i].x,this.point[i].y,0.8*this.size);
         this.ctx.fillStyle = "rgba(0,0,0,0)";
       }else if(this.point[i].type===5){
         this.ctx.fillStyle = "rgba(0,0,0,0)";
@@ -579,6 +592,17 @@ class Puzzle_tri extends Puzzle{
           this.ctx.moveTo(this.point[i1].x+r/d*dy,this.point[i1].y-r/d*dx);
           this.ctx.lineTo(this.point[i2].x+r/d*dy,this.point[i2].y-r/d*dx);
         }else{
+          if(this.point[i1].type === 2||this.point[i1].type === 3||this.point[i1].type === 4){//for centerline
+            this.ctx.moveTo(this.point[i2].x,this.point[i2].y);
+            this.ctx.lineTo((this.point[i1].x+this.point[i2].x)*0.5,(this.point[i1].y+this.point[i2].y)*0.5);
+            this.ctx.stroke();
+            this.ctx.lineCap="butt";
+          }else if(this.point[i2].type === 2||this.point[i2].type === 3||this.point[i2].type === 4){
+            this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
+            this.ctx.lineTo((this.point[i1].x+this.point[i2].x)*0.5,(this.point[i1].y+this.point[i2].y)*0.5);
+            this.ctx.stroke();
+            this.ctx.lineCap="butt";
+          }
           this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
           this.ctx.lineTo(this.point[i2].x,this.point[i2].y);
         }

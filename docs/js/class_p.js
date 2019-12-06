@@ -1,10 +1,11 @@
 class Point{
-  constructor(x,y,type,adjacent,surround,use){
+  constructor(x,y,type,adjacent,surround,use,neighbor = []){
     this.x = x;
     this.y = y;
     this.type = type;
     this.adjacent = adjacent;
     this.surround = surround;
+    this.neighbor = neighbor;
     this.use = use;
   }
 }
@@ -51,8 +52,9 @@ class Puzzle{
     this.canvas = document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
     this.obj = document.getElementById("dvique");
-    this.group1 = ["mo_cage_lb","sub_line2_lb","sub_lineE2_lb","sub_number9_lb","ms_tri","ms_pencils","ms_arrow_fourtip"];
+    this.group1 = ["mo_cage_lb","sub_line2_lb","sub_lineE2_lb","sub_number9_lb","ms_tri","ms_pencils","ms_arrow_fourtip","mo_combi_lb"];
     this.group2 = ["mo_wall_lb","sub_number2_lb","sub_number3_lb","sub_number6_lb","ms4","ms5"];
+    this.group3 = ["sub_line5_lb"]
 
     //描画位置
     this.last = -1;
@@ -66,6 +68,7 @@ class Puzzle{
     this.drawing_move = -1;
     this.cursol = 0;
     this.cursolS = 0;
+    this.paneloff = false;
     //描画モード
     this.mmode = ""; //出題モード用
     this.mode = {
@@ -81,7 +84,8 @@ class Puzzle{
               "symbol":["circle_L",2],
               "special":["thermo",""],
               "board":["",""],
-              "move":["1",""]
+              "move":["1",""],
+              "combi":["battleship",""]
             },
       "pu_a":{"edit_mode":"surface",
               "surface":["",1],
@@ -93,7 +97,8 @@ class Puzzle{
               "symbol":["circle_L",2],
               "special":["thermo",""],
               "board":["",""],
-              "move":["1",""]}
+              "move":["1",""],
+              "combi":["battleship",""]}
             };
     this.theta = 0;
     this.reflect = [1,1];
@@ -577,6 +582,7 @@ class Puzzle{
     document.getElementById('mode_symbol').style.display='none';
     document.getElementById('mode_special').style.display='none';
     document.getElementById('mode_move').style.display='none';
+    document.getElementById('mode_combi').style.display='none';
 
     document.getElementById('style_surface').style.display='none';
     document.getElementById('style_line').style.display='none';
@@ -798,7 +804,7 @@ class Puzzle{
       text += "--------\n";
 
       //解答数字
-      if(!isEmpty(this.pu_a.number)){
+      if(!isEmptycontent("pu_a","number",2,"1")){
         text += '#解答数字:3,True\n'+
         '*Grid:'+gridsize+','+gridsize+'\n'+
         '*Skew:0,0\n'+
@@ -821,7 +827,7 @@ class Puzzle{
       }
 
       //解答文字
-      if(!isEmpty(this.pu_a.number)){
+      if(!isEmptycontent("pu_a","number",2,"1")){
         text += '#解答文字:7,True\n'+
         '*Grid:'+gridsize+','+gridsize+'\n'+
         '*Skew:0,0\n'+
@@ -846,7 +852,7 @@ class Puzzle{
       }
 
       //問題数字
-      if(!isEmpty(this.pu_q.number)){
+      if(!isEmptycontent("pu_q","number",2,"1")){
         text += '#問題数字:3,True\n'+
         '*Grid:'+gridsize+','+gridsize+'\n'+
         '*Skew:0,0\n'+
@@ -903,7 +909,7 @@ class Puzzle{
       }
 
       //問題文字
-      if(!isEmpty(this.pu_q.number)){
+      if(!isEmptycontent("pu_q","number",2,"1")){
         text += '#問題文字:7,True\n'+
         '*Grid:'+gridsize+','+gridsize+'\n'+
         '*Skew:0,0\n'+
@@ -928,7 +934,7 @@ class Puzzle{
       }
 
       //問題Tapa数字
-      if(!isEmpty(this.pu_q.number)){
+      if(!isEmptycontent("pu_q","number",2,"4")){
         text += '#問題Tapa数字:6,True\n'+
         '*Grid:'+gridsize+','+gridsize+'\n'+
         '*Skew:0,0\n'+
@@ -951,7 +957,7 @@ class Puzzle{
       }
 
       //問題丸
-      if(!isEmpty(this.pu_q.symbol)){
+      if(!isEmptycontent("pu_q","symbol",1,"circle_M")){
         text += '#問題丸:4,True\n'+
         '*Grid:'+gridsize+','+gridsize+'\n'+
         '*Skew:0,0\n'+
@@ -976,7 +982,7 @@ class Puzzle{
       }
 
       //解答丸
-      if(!isEmpty(this.pu_a.symbol)){
+      if(!isEmptycontent("pu_a","symbol",1,"circle_M")){
         text += '#解答丸:4,True\n'+
         '*Grid:'+gridsize+','+gridsize+'\n'+
         '*Skew:0,0\n'+
@@ -1835,6 +1841,12 @@ class Puzzle{
       var array;
       if (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "1"){
         if(this.point[num].adjacent.indexOf(parseInt(this.last)) != -1){
+          array = "line";
+          var key = (Math.min(num,this.last)).toString()+","+(Math.max(num,this.last)).toString();
+          this.re_line(array,key,line_style);
+        }
+      }else if (this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "5"){//centerline
+        if(this.point[num].neighbor.indexOf(parseInt(this.last)) != -1){
           array = "line";
           var key = (Math.min(num,this.last)).toString()+","+(Math.max(num,this.last)).toString();
           this.re_line(array,key,line_style);

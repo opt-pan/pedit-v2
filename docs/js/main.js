@@ -317,6 +317,14 @@ function window_click(e) {
       panel_pu.mode_set('Cyrillic');
       panel_pu.select_close();
       e.preventDefault(); break;
+    case "panel_Chess_lbmenu":
+      panel_pu.mode_set('Chess');
+      panel_pu.select_close();
+      e.preventDefault(); break;
+    case "panel_card_lbmenu":
+      panel_pu.mode_set('card');
+      panel_pu.select_close();
+      e.preventDefault(); break;
     case "panel_select_lbmenu":
       panel_pu.select_open();
       e.preventDefault(); break;
@@ -552,6 +560,7 @@ function window_click(e) {
       var numxf = Math.floor(xf/(sizef+3));
       var numyf = Math.floor(yf/(sizef+3));
       var n = numxf+numyf*panel_pu.nxf;
+      var paneletc = ["ja_K","ja_H","Kan","Rome","Greek","Cyrillic","europe","Chess","card"];
 
       if(pu.mode[pu.mode.qa].edit_mode === "symbol"){
         panel_pu.edit_num = n;
@@ -587,43 +596,7 @@ function window_click(e) {
         }else if (panel_pu.cont[n]===" "){
           pu.key_space();
         }
-      }else if(panel_pu.panelmode === "ja_K"){
-        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
-          pu.key_number(panel_pu.cont[n]);
-        }else if (panel_pu.cont[n]==="　"){
-          pu.key_space();
-        }
-      }else if(panel_pu.panelmode === "ja_H"){
-        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
-          pu.key_number(panel_pu.cont[n]);
-        }else if (panel_pu.cont[n]==="　"){
-          pu.key_space();
-        }
-      }else if(panel_pu.panelmode === "Kan"){
-        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
-          pu.key_number(panel_pu.cont[n]);
-        }else if (panel_pu.cont[n]==="　"){
-          pu.key_space();
-        }
-      }else if(panel_pu.panelmode === "Rome"){
-        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
-          pu.key_number(panel_pu.cont[n]);
-        }else if (panel_pu.cont[n]==="　"){
-          pu.key_space();
-        }
-      }else if(panel_pu.panelmode === "Greek"){
-        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
-          pu.key_number(panel_pu.cont[n]);
-        }else if (panel_pu.cont[n]==="　"){
-          pu.key_space();
-        }
-      }else if(panel_pu.panelmode === "Cyrillic"){
-        if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
-          pu.key_number(panel_pu.cont[n]);
-        }else if (panel_pu.cont[n]==="　"){
-          pu.key_space();
-        }
-      }else if(panel_pu.panelmode === "europe"){
+      }else if(paneletc.indexOf(panel_pu.panelmode)!=-1){
         if (panel_pu.cont[n] && panel_pu.cont[n]!="　"){
           pu.key_number(panel_pu.cont[n]);
         }else if (panel_pu.cont[n]==="　"){

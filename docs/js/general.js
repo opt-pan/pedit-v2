@@ -509,6 +509,15 @@ function isEmpty(obj){
   return !Object.keys(obj).length;
 }
 
+function isEmptycontent(pu_qa,array,num,value){
+  for (i in pu[pu_qa][array]){
+    if(pu[pu_qa][array][i][num]===value){
+      return false;
+    }
+  }
+  return true;
+}
+
 /*Copyright (c) 2017 Yuzo Matsuzawa*/
 
 (function(target) {

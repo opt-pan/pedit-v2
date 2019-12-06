@@ -45,13 +45,16 @@ class Puzzle_square extends Puzzle{
     for (var i of this.group2){
       document.getElementById(i).style.display = "inline-block";
     }
+    for (var i of this.group3){
+      document.getElementById(i).style.display = "inline-block";
+    }
   }
 
   create_point(){
     var k = 0;
     var nx = this.nx0;
     var ny = this.ny0;
-    var adjacent,surround,type,use;
+    var adjacent,surround,type,use,neighbor;
     var point = [];
     //center
     type = 0;
@@ -60,7 +63,8 @@ class Puzzle_square extends Puzzle{
         if(i===0||i===nx-1||j===0||j===ny-1){use=-1;}else{use=1;}
         adjacent = [k-nx,k-1,k+1,k+nx,k-nx-1,k-nx+1,k+nx-1,k+nx+1];
         surround = [k+nx*ny-nx-1,k+nx*ny-nx,k+nx*ny,k+nx*ny-1];
-        point[k] = new Point((i+0.5)*this.size,(j+0.5)*this.size,type,adjacent,surround,use);
+        neighbor = [k+2*nx*ny-nx,k+2*nx*ny,k+3*nx*ny-1,k+3*nx*ny];
+        point[k] = new Point((i+0.5)*this.size,(j+0.5)*this.size,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -84,7 +88,8 @@ class Puzzle_square extends Puzzle{
         if(i===0||i===nx-1||j===0||j===ny-1){use=-1;}else{use=1;}
         adjacent = [k+nx,k-nx];
         surround = [];
-        point[k] = new Point(point[i+j*nx].x,point[i+j*nx].y+0.5*this.size,type,adjacent,surround,use);
+        neighbor = [k-2*nx*ny,k-2*nx*ny+nx];
+        point[k] = new Point(point[i+j*nx].x,point[i+j*nx].y+0.5*this.size,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -94,7 +99,8 @@ class Puzzle_square extends Puzzle{
         if(i===0||i===nx-1||j===0||j===ny-1){use=-1;}else{use=1;}
         adjacent = [k+1,k-1];
         surround = [];
-        point[k] = new Point(point[i+j*nx].x+0.5*this.size,point[i+j*nx].y,type,adjacent,surround,use);
+        neighbor = [k-3*nx*ny,k-3*nx*ny+1];
+        point[k] = new Point(point[i+j*nx].x+0.5*this.size,point[i+j*nx].y,type,adjacent,surround,use,neighbor);
         k++;
       }
     }
@@ -204,6 +210,8 @@ class Puzzle_square extends Puzzle{
           type = [2,3];
         }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "2"){
           type = [0,1];
+        }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "5"){
+          type = [0,2,3];
         }else{
           type = [0];
         }
@@ -229,6 +237,11 @@ class Puzzle_square extends Puzzle{
         break;
       case "special":
         type = [0,1];
+        break;
+      case "combi":
+        if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "battleship"){
+          type = [0];
+        }
         break;
     }
     return type;
@@ -425,6 +438,13 @@ class Puzzle_square extends Puzzle{
         this.re_movedown(num);
         this.redraw();
         break;
+      case "combi":
+              this.paneloff = true;
+        if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "battleship"){
+          this.re_combi_battle(num);
+        }
+                this.paneloff = false;
+        break;
     }
   }
 
@@ -523,6 +543,12 @@ class Puzzle_square extends Puzzle{
           var key = (Math.min(num,this.last)).toString()+","+(Math.max(num,this.last)).toString();
           this.re_line(array,key,line_style);
         }
+      }else if(this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][0] === "5"){
+        if(this.point[num].neighbor.indexOf(parseInt(this.last)) != -1){
+          array = "line";
+          var key = (Math.min(num,this.last)).toString()+","+(Math.max(num,this.last)).toString();
+          this.re_line(array,key,line_style);
+        }
       }
       this.redraw();
     }
@@ -580,6 +606,51 @@ class Puzzle_square extends Puzzle{
         this[this.mode.qa].number[this.cursol] = [number,this.mode[this.mode.qa][this.mode[this.mode.qa].edit_mode][1],"2"];
         this.redraw();
       }
+  }
+
+  re_combi_battle(num){
+    var save = this.mode[this.mode.qa].symbol;
+    this.mode[this.mode.qa].edit_mode = "symbol";
+    this.mode[this.mode.qa].symbol = ["battleship_B",2];
+    this.cursol = num;
+    if(!this[this.mode.qa].symbol[num]||this[this.mode.qa].symbol[num][1]!="battleship_B"){
+      this.key_number(2);
+    }else if (this[this.mode.qa].symbol[num][0]===8){
+      this.key_space();
+    }else{
+      var adj = [0,0,0,0,0];
+      for (var i=0;i<4;i++){
+        if(this[this.mode.qa].symbol[this.point[num].adjacent[i]]&&this[this.mode.qa].symbol[this.point[num].adjacent[i]][1]==="battleship_B"&&this[this.mode.qa].symbol[this.point[num].adjacent[i]][0]<=6){//隣がバトルシップだったら
+          adj[i]=1;
+          adj[4]+=1;
+        }
+      }
+      if (adj[4]===0){
+        this.key_battleship(num,1);
+      }else if(adj[4]===1){
+        if(adj[0]===1){
+          this.key_battleship(num,6);
+        }else if(adj[1]===1){
+          this.key_battleship(num,5);
+        }else if(adj[2]===1){
+          this.key_battleship(num,3);
+        }else if(adj[3]===1){
+          this.key_battleship(num,4);
+        }
+      }else{
+        this.key_battleship(num,8);
+      }
+    }
+    this.mode[this.mode.qa].edit_mode = "combi";
+    this.mode[this.mode.qa].symbol = save;
+  }
+
+  key_battleship(num,n){
+    if(this[this.mode.qa].symbol[num]&&this[this.mode.qa].symbol[num][0]===n){
+      this.key_number(8);
+    }else{
+      this.key_number(n);
+    }
   }
 ////////////////draw/////////////////////
 
@@ -828,6 +899,17 @@ class Puzzle_square extends Puzzle{
           this.ctx.moveTo(this.point[i1].x+r/d*dy,this.point[i1].y-r/d*dx);
           this.ctx.lineTo(this.point[i2].x+r/d*dy,this.point[i2].y-r/d*dx);
         }else{
+          if(this.point[i1].type === 2||this.point[i1].type === 3){//for centerline
+            this.ctx.moveTo(this.point[i2].x,this.point[i2].y);
+            this.ctx.lineTo((this.point[i1].x+this.point[i2].x)*0.5,(this.point[i1].y+this.point[i2].y)*0.5);
+            this.ctx.stroke();
+            this.ctx.lineCap="butt";
+          }else if(this.point[i2].type === 2||this.point[i2].type === 3){
+            this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
+            this.ctx.lineTo((this.point[i1].x+this.point[i2].x)*0.5,(this.point[i1].y+this.point[i2].y)*0.5);
+            this.ctx.stroke();
+            this.ctx.lineCap="butt";
+          }
           this.ctx.moveTo(this.point[i1].x,this.point[i1].y);
           this.ctx.lineTo(this.point[i2].x,this.point[i2].y);
         }
@@ -2380,6 +2462,15 @@ class Puzzle_square extends Puzzle{
         ctx.text("～",x,y-0.11*pu.size);
         ctx.text("～",x,y+0.09*pu.size);
         ctx.text("～",x,y+0.29*pu.size);
+        break;
+      case 8:
+        r = 0.05;
+        ctx.setLineDash([]);
+        ctx.lineCap = "butt";
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.strokeStyle = "rgba(0,0,0,0)";
+        ctx.lineWidth = 2;
+        this.draw_circle(ctx,x,y,r);
         break;
     }
   }
