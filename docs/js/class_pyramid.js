@@ -184,7 +184,7 @@ class Puzzle_pyramid extends Puzzle{
 
     this.search_center();
     this.center_n0 = this.center_n;
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.canvas_size_setting();
     this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),this.theta);
     this.make_frameline();

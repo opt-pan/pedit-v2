@@ -242,7 +242,7 @@ class Puzzle{
   }
 
   reset_frame_newgrid(){
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.create_point();
     this.search_center();
     this.canvas_size_setting();
@@ -364,7 +364,7 @@ class Puzzle{
     this.search_center();
     this.width_c = this.width;
     this.height_c = this.height;
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.canvas_size_setting();
     this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),0);
     this.point_usecheck();
@@ -375,7 +375,7 @@ class Puzzle{
     this.width_c = this.width0;
     this.height_c = this.height0;
     this.center_n = this.center_n0; //reset for maketext
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.canvas_size_setting();
     this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),0);
     this.redraw();
@@ -393,7 +393,7 @@ class Puzzle{
     }
   }
 
-  canvasxy_update(space){//space for imagesave
+  canvasxy_update(){//space for imagesave
     this.size = parseInt(document.getElementById("nb_size3").value);
     this.canvasx = (this.width_c)*this.size;
     this.canvasy = (this.height_c)*this.size;
@@ -2020,7 +2020,7 @@ class Puzzle{
   draw_frameBold(){
     /*frame-B*/
     for(var i in this.frame){
-      if(this.frame[i]===2&&!this[this.mode.qa].deletelineE[i]){
+      if(this.frame[i]===2&&!this.pu_q.deletelineE[i]){
         set_line_style(this.ctx,this.frame[i]);
         var i1 = i.split(",")[0];
         var i2 = i.split(",")[1];

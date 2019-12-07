@@ -183,7 +183,7 @@ class Puzzle_hex extends Puzzle{
       this.centerlist = this.listappend(this.centerlist);
     }
     this.search_center();
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.canvas_size_setting();
     this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),this.theta);
     this.make_frameline();
@@ -248,7 +248,7 @@ class Puzzle_hex extends Puzzle{
 
   rotate_left(){
     this.theta = (this.theta-30*this.reflect[0]*this.reflect[1]+360)%360;
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.canvas_size_setting();
     this.point_move(0,0,-30);
     this.redraw();
@@ -256,7 +256,7 @@ class Puzzle_hex extends Puzzle{
 
   rotate_right(){
     this.theta = (this.theta+30*this.reflect[0]*this.reflect[1]+360)%360;
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.canvas_size_setting();
     this.point_move(0,0,30);
     this.redraw();

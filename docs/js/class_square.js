@@ -160,16 +160,24 @@ class Puzzle_square extends Puzzle{
     ];
 
     this.centerlist = []
-    for (var j=2+this.space[0]; j<this.ny0-2-this.space[1]; j++){
-      for (var i=2+this.space[2]; i<this.nx0-2-this.space[3]; i++){ //上と左端は未使用
+    for (var j=2; j<this.ny0-2; j++){
+      for (var i=2; i<this.nx0-2; i++){ //上と左端は未使用
         this.centerlist.push(i+j*(this.nx0));
       }
     }
     this.search_center();
     this.center_n0 = this.center_n;
-    this.canvasxy_update(0);
+    this.canvasxy_update();
     this.canvas_size_setting();
     this.point_move((this.canvasx*0.5-this.point[this.center_n].x+0.5),(this.canvasy*0.5-this.point[this.center_n].y+0.5),this.theta);
+
+    this.centerlist = []  //centerlistを余白に合わせて再設定
+    for (var j=2+this.space[0]; j<this.ny0-2-this.space[1]; j++){
+      for (var i=2+this.space[2]; i<this.nx0-2-this.space[3]; i++){ //上と左端は未使用
+        this.centerlist.push(i+j*(this.nx0));
+      }
+    }
+
     this.make_frameline();
     this.cursol = this.centerlist[0];
     this.cursolS =  4*(this.nx0)*(this.ny0)+4+4*(this.nx0);
@@ -993,7 +1001,7 @@ class Puzzle_square extends Puzzle{
   }
 
   draw_cage(pu) {
-    var r = 0.16;
+    var r = 0.16;//space between grid
     var a = [0,1,2,3],c;
     if(this.theta===90){a = [2,0,3,1];}
     else if(this.theta===180){a = [3,2,1,0];}
@@ -1059,25 +1067,41 @@ class Puzzle_square extends Puzzle{
 
   draw_symbol(pu,layer) {
     /*symbol_layer*/
+    var p_x,p_y;
     for(var i in this[pu].symbol){
+      if(i.slice(-1)==="E"){//辺モードでの重ね書き
+        p_x = this.point[i.slice(0,-1)].x;
+        p_y = this.point[i.slice(0,-1)].y;
+      }else{
+        p_x = this.point[i].x;
+        p_y = this.point[i].y;
+      }
       if (this[pu].symbol[i][2] === layer){
-        this.draw_symbol_select(this.ctx,this.point[i].x,this.point[i].y,this[pu].symbol[i][0],this[pu].symbol[i][1]);
+        this.draw_symbol_select(this.ctx,p_x,p_y,this[pu].symbol[i][0],this[pu].symbol[i][1]);
       }
     }
   }
 
   draw_number(pu) {
     /*number*/
+    var p_x,p_y;
     for(var i in this[pu].number){
+      if(i.slice(-1)==="E"){//辺モードでの重ね書き
+        p_x = this.point[i.slice(0,-1)].x;
+        p_y = this.point[i.slice(0,-1)].y;
+      }else{
+        p_x = this.point[i].x;
+        p_y = this.point[i].y;
+      }
       switch(this[pu].number[i][2]){
         case "1": //normal
-          this.draw_numbercircle(pu,i,0.42);
+          this.draw_numbercircle(pu,i,p_x,p_y,0.42);
           set_font_style(this.ctx,0.7*this.size.toString(10),this[pu].number[i][1]);
-          this.ctx.text(this[pu].number[i][0],this.point[i].x,this.point[i].y+0.06*this.size,this.size*0.8);
+          this.ctx.text(this[pu].number[i][0],p_x,p_y+0.06*this.size,this.size*0.8);
           break;
         case "2": //arrow
           var arrowlength = 0.7;
-          this.draw_numbercircle(pu,i,0.42);
+          this.draw_numbercircle(pu,i,p_x,p_y,0.42);
           set_font_style(this.ctx,0.7*this.size.toString(10),this[pu].number[i][1]);
           var direction = {
             "_0":90,"_1":180,"_2":0,"_3":270,"_4":135,"_5":45,"_6":225,"_7":315,
@@ -1088,117 +1112,117 @@ class Puzzle_square extends Puzzle{
           switch(direction){
 
             case 180:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x+0.0*this.size,this.point[i].y+0.15*this.size,this.size*0.8);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x+0.0*this.size,p_y+0.15*this.size,this.size*0.8);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x+(arrowlength*0.5+0.0)*this.size, this.point[i].y+(arrowlength*0.0-0.3)*this.size,
-                          this.point[i].x+(-arrowlength*0.5+0.0)*this.size, this.point[i].y+(-arrowlength*0.0-0.3)*this.size,
+                this.ctx.arrow(p_x+(arrowlength*0.5+0.0)*this.size, p_y+(arrowlength*0.0-0.3)*this.size,
+                          p_x+(-arrowlength*0.5+0.0)*this.size, p_y+(-arrowlength*0.0-0.3)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             case 0:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x+0.0*this.size,this.point[i].y+0.15*this.size,this.size*0.8);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x+0.0*this.size,p_y+0.15*this.size,this.size*0.8);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x-(arrowlength*0.5+0.0)*this.size, this.point[i].y+(arrowlength*0.0-0.3)*this.size,
-                          this.point[i].x-(-arrowlength*0.5+0.0)*this.size, this.point[i].y+(-arrowlength*0.0-0.3)*this.size,
+                this.ctx.arrow(p_x-(arrowlength*0.5+0.0)*this.size, p_y+(arrowlength*0.0-0.3)*this.size,
+                          p_x-(-arrowlength*0.5+0.0)*this.size, p_y+(-arrowlength*0.0-0.3)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             case 90:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x-0.1*this.size,this.point[i].y+0.05*this.size,this.size*0.8);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x-0.1*this.size,p_y+0.05*this.size,this.size*0.8);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x+(arrowlength*0.0+0.3)*this.size, this.point[i].y+(arrowlength*0.5-0.0)*this.size,
-                          this.point[i].x+(-arrowlength*0.0+0.3)*this.size, this.point[i].y+(-arrowlength*0.5-0.0)*this.size,
+                this.ctx.arrow(p_x+(arrowlength*0.0+0.3)*this.size, p_y+(arrowlength*0.5-0.0)*this.size,
+                          p_x+(-arrowlength*0.0+0.3)*this.size, p_y+(-arrowlength*0.5-0.0)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             case 270:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x-0.1*this.size,this.point[i].y+0.05*this.size,this.size*0.8);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x-0.1*this.size,p_y+0.05*this.size,this.size*0.8);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x+(arrowlength*0.0+0.3)*this.size, this.point[i].y+(-arrowlength*0.5-0.0)*this.size,
-                          this.point[i].x+(-arrowlength*0.0+0.3)*this.size, this.point[i].y+(arrowlength*0.5-0.0)*this.size,
+                this.ctx.arrow(p_x+(arrowlength*0.0+0.3)*this.size, p_y+(-arrowlength*0.5-0.0)*this.size,
+                          p_x+(-arrowlength*0.0+0.3)*this.size, p_y+(arrowlength*0.5-0.0)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             case 45:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x+0.05*this.size,this.point[i].y+0.15*this.size,this.size*0.7);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x+0.05*this.size,p_y+0.15*this.size,this.size*0.7);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x+(-arrowlength*0.35-0.2)*this.size, this.point[i].y+(arrowlength*0.35-0.2)*this.size,
-                          this.point[i].x+(arrowlength*0.35-0.2)*this.size, this.point[i].y+(-arrowlength*0.35-0.2)*this.size,
+                this.ctx.arrow(p_x+(-arrowlength*0.35-0.2)*this.size, p_y+(arrowlength*0.35-0.2)*this.size,
+                          p_x+(arrowlength*0.35-0.2)*this.size, p_y+(-arrowlength*0.35-0.2)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             case 225:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x+0.05*this.size,this.point[i].y+0.15*this.size,this.size*0.7);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x+0.05*this.size,p_y+0.15*this.size,this.size*0.7);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x+(arrowlength*0.35-0.2)*this.size, this.point[i].y+(-arrowlength*0.35-0.2)*this.size,
-                          this.point[i].x+(-arrowlength*0.35-0.2)*this.size, this.point[i].y+(arrowlength*0.35-0.2)*this.size,
+                this.ctx.arrow(p_x+(arrowlength*0.35-0.2)*this.size, p_y+(-arrowlength*0.35-0.2)*this.size,
+                          p_x+(-arrowlength*0.35-0.2)*this.size, p_y+(arrowlength*0.35-0.2)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             case 135:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x-0.05*this.size,this.point[i].y+0.15*this.size,this.size*0.7);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x-0.05*this.size,p_y+0.15*this.size,this.size*0.7);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x+(arrowlength*0.35+0.2)*this.size, this.point[i].y+(arrowlength*0.35-0.2)*this.size,
-                          this.point[i].x+(-arrowlength*0.35+0.2)*this.size, this.point[i].y+(-arrowlength*0.35-0.2)*this.size,
+                this.ctx.arrow(p_x+(arrowlength*0.35+0.2)*this.size, p_y+(arrowlength*0.35-0.2)*this.size,
+                          p_x+(-arrowlength*0.35+0.2)*this.size, p_y+(-arrowlength*0.35-0.2)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             case 315:
-                this.ctx.text(this[pu].number[i][0].slice(0,-2),this.point[i].x-0.05*this.size,this.point[i].y+0.15*this.size,this.size*0.7);
+                this.ctx.text(this[pu].number[i][0].slice(0,-2),p_x-0.05*this.size,p_y+0.15*this.size,this.size*0.7);
                 this.ctx.beginPath();
-                this.ctx.arrow(this.point[i].x+(-arrowlength*0.35+0.2)*this.size, this.point[i].y+(-arrowlength*0.35-0.2)*this.size,
-                          this.point[i].x+(arrowlength*0.35+0.2)*this.size, this.point[i].y+(arrowlength*0.35-0.2)*this.size,
+                this.ctx.arrow(p_x+(-arrowlength*0.35+0.2)*this.size, p_y+(-arrowlength*0.35-0.2)*this.size,
+                          p_x+(arrowlength*0.35+0.2)*this.size, p_y+(arrowlength*0.35-0.2)*this.size,
                           [0, 1, -0.25*this.size, 1, -0.25*this.size, 3]);
                 this.ctx.stroke();
                 this.ctx.fill();
               break;
             default:
               set_font_style(this.ctx,0.7*this.size.toString(10),this[pu].number[i][1]);;
-              this.ctx.text(this[pu].number[i][0],this.point[i].x,this.point[i].y+0.06*this.size,this.size*0.8);
+              this.ctx.text(this[pu].number[i][0],p_x,p_y+0.06*this.size,this.size*0.8);
               break;
           }
           break;
         case "4"://tapa
-          this.draw_numbercircle(pu,i,0.44);
+          this.draw_numbercircle(pu,i,p_x,p_y,0.44);
           if (this[pu].number[i][0].length === 1){
             set_font_style(this.ctx,0.7*this.size.toString(10),this[pu].number[i][1]);
-            this.ctx.text(this[pu].number[i][0],this.point[i].x,this.point[i].y+0.06*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0],p_x,p_y+0.06*this.size,this.size*0.8);
           }else if (this[pu].number[i][0].length === 2){
             set_font_style(this.ctx,0.48*this.size.toString(10),this[pu].number[i][1]);
-            this.ctx.text(this[pu].number[i][0].slice(0,1),this.point[i].x-0.16*this.size,this.point[i].y-0.15*this.size,this.size*0.8);
-            this.ctx.text(this[pu].number[i][0].slice(1,2),this.point[i].x+0.18*this.size,this.point[i].y+0.19*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(0,1),p_x-0.16*this.size,p_y-0.15*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(1,2),p_x+0.18*this.size,p_y+0.19*this.size,this.size*0.8);
           }else if (this[pu].number[i][0].length === 3){
             set_font_style(this.ctx,0.45*this.size.toString(10),this[pu].number[i][1]);
-            this.ctx.text(this[pu].number[i][0].slice(0,1),this.point[i].x-0.22*this.size,this.point[i].y-0.14*this.size,this.size*0.8);
-            this.ctx.text(this[pu].number[i][0].slice(1,2),this.point[i].x+0.24*this.size,this.point[i].y-0.05*this.size,this.size*0.8);
-            this.ctx.text(this[pu].number[i][0].slice(2,3),this.point[i].x-0.0*this.size,this.point[i].y+0.3*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(0,1),p_x-0.22*this.size,p_y-0.14*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(1,2),p_x+0.24*this.size,p_y-0.05*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(2,3),p_x-0.0*this.size,p_y+0.3*this.size,this.size*0.8);
           }else if (this[pu].number[i][0].length === 4){
             set_font_style(this.ctx,0.4*this.size.toString(10),this[pu].number[i][1]);
-            this.ctx.text(this[pu].number[i][0].slice(0,1),this.point[i].x-0.0*this.size,this.point[i].y-0.22*this.size,this.size*0.8);
-            this.ctx.text(this[pu].number[i][0].slice(1,2),this.point[i].x-0.26*this.size,this.point[i].y+0.04*this.size,this.size*0.8);
-            this.ctx.text(this[pu].number[i][0].slice(2,3),this.point[i].x+0.26*this.size,this.point[i].y+0.04*this.size,this.size*0.8);
-            this.ctx.text(this[pu].number[i][0].slice(3,4),this.point[i].x-0.0*this.size,this.point[i].y+0.3*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(0,1),p_x-0.0*this.size,p_y-0.22*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(1,2),p_x-0.26*this.size,p_y+0.04*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(2,3),p_x+0.26*this.size,p_y+0.04*this.size,this.size*0.8);
+            this.ctx.text(this[pu].number[i][0].slice(3,4),p_x-0.0*this.size,p_y+0.3*this.size,this.size*0.8);
           }
           break;
         case "5"://small
-          this.draw_numbercircle(pu,i,0.17);
+          this.draw_numbercircle(pu,i,p_x,p_y,0.17);
           set_font_style(this.ctx,0.25*this.size.toString(10),this[pu].number[i][1]);
-          this.ctx.text(this[pu].number[i][0],this.point[i].x,this.point[i].y+0.02*this.size,this.size*0.8);
+          this.ctx.text(this[pu].number[i][0],p_x,p_y+0.02*this.size,this.size*0.8);
           break;
         case "6"://medium
-          this.draw_numbercircle(pu,i,0.25);
+          this.draw_numbercircle(pu,i,p_x,p_y,0.25);
           set_font_style(this.ctx,0.4*this.size.toString(10),this[pu].number[i][1]);
-          this.ctx.text(this[pu].number[i][0],this.point[i].x,this.point[i].y+0.03*this.size,this.size*0.8);
+          this.ctx.text(this[pu].number[i][0],p_x,p_y+0.03*this.size,this.size*0.8);
           break;
         case "7"://sudoku
-          this.draw_numbercircle(pu,i,0.42);
+          this.draw_numbercircle(pu,i,p_x,p_y,0.42);
           var sum = 0,pos = 0;
           for(var j=0;j<9;j++){
             if(this[pu].number[i][0][j]===1){
@@ -1208,12 +1232,12 @@ class Puzzle_square extends Puzzle{
           }
           if(sum === 1){
             set_font_style(this.ctx,0.7*this.size.toString(10),this[pu].number[i][1]);
-            this.ctx.text((pos+1).toString(),this.point[i].x,this.point[i].y+0.06*this.size,this.size*0.8);
+            this.ctx.text((pos+1).toString(),p_x,p_y+0.06*this.size,this.size*0.8);
           }else{
             set_font_style(this.ctx,0.3*this.size.toString(10),this[pu].number[i][1]);
             for(var j=0;j<9;j++){
               if(this[pu].number[i][0][j]===1){
-                this.ctx.text((j+1).toString(),this.point[i].x+((j%3-1)*0.25)*this.size,this.point[i].y+(((j/3|0)-1)*0.25+0.01)*this.size);
+                this.ctx.text((j+1).toString(),p_x+((j%3-1)*0.25)*this.size,p_y+(((j/3|0)-1)*0.25+0.01)*this.size);
               }
             }
           }
@@ -1222,11 +1246,11 @@ class Puzzle_square extends Puzzle{
           if(this[pu].number[i][1]===5){
             set_font_style(this.ctx,0.5*this.size.toString(10),this[pu].number[i][1]);
             set_circle_style(this.ctx,7);
-            this.ctx.fillRect(this.point[i].x-0.2*this.size,this.point[i].y-0.25*this.size, this.ctx.measureText(this[pu].number[i][0]).width, 0.5*this.size);
+            this.ctx.fillRect(p_x-0.2*this.size,p_y-0.25*this.size, this.ctx.measureText(this[pu].number[i][0]).width, 0.5*this.size);
           }
           set_font_style(this.ctx,0.5*this.size.toString(10),this[pu].number[i][1]);
           this.ctx.textAlign = "left";
-          this.ctx.text(this[pu].number[i][0],this.point[i].x-0.2*this.size,this.point[i].y);
+          this.ctx.text(this[pu].number[i][0],p_x-0.2*this.size,p_y);
           break;
       }
     }
@@ -1254,16 +1278,16 @@ class Puzzle_square extends Puzzle{
     }
   }
 
-  draw_numbercircle(pu,i,size){
+  draw_numbercircle(pu,i,p_x,p_y,size){
     if(this[pu].number[i][1]===5){
       set_circle_style(this.ctx,7);
-      this.draw_circle(this.ctx,this.point[i].x,this.point[i].y,size);
+      this.draw_circle(this.ctx,p_x,p_y,size);
     }else if(this[pu].number[i][1]===6){
       set_circle_style(this.ctx,1);
-      this.draw_circle(this.ctx,this.point[i].x,this.point[i].y,size);
+      this.draw_circle(this.ctx,p_x,p_y,size);
     }else if(this[pu].number[i][1]===7){
       set_circle_style(this.ctx,2);
-      this.draw_circle(this.ctx,this.point[i].x,this.point[i].y,size);
+      this.draw_circle(this.ctx,p_x,p_y,size);
     }
   }
 
